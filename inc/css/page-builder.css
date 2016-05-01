@@ -129,8 +129,19 @@ section:hover{
 	display:flex;
 }
 
-
-
+body{
+	margin:0; padding:0;
+}
+#main-header{
+	background-color:#333; margin:0;
+	font-family: sans;
+	padding:2em;
+	color:#aaa;
+	font-size:0.5em;
+}
+#main-header h1, #main-header h2{
+	margin:0;
+}
 #page-builder{
 	width:70%;
 	flex:0 0 70%;
