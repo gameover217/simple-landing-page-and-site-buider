@@ -1,0 +1,193 @@
+<!--
+/*
+Name: Simple landing page and site builder
+Author: gdurtan
+Author URI: https://pl.linkedin.com/pub/grzegorz-durtan/11/b74/296
+Version: 0.0.1
+License: GPL2
+*/
+-->
+<!DOCTYPE html>
+<html lang="en" class=" is-copy-enabled">
+<head>
+	<title>Title of the document</title>
+</head>
+<body>
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="inc/css/dragula.min.css">
+	<link rel="stylesheet" type="text/css" href="inc/css/medium-editor.min.css">
+	<link rel="stylesheet" type="text/css" href="inc/css/page-builder.css">
+	<script type="text/javascript" src="inc/js/dragula.min.js"></script>
+	<script type="text/javascript" src="inc/js/medium-editor.min.js"></script>
+	<script type="text/javascript" src="inc/js/doT.min.js"></script>
+	<script type="text/javascript" src="inc/js/app.js"></script>
+	<script type="text/javascript" src="inc/js/dropzone.min.js"></script>
+
+	<style>
+		.gu-mirror{
+			transform:scale(0.6);
+		}
+	</style>
+
+	<div id="openModal" class="modalDialog">
+		<div>	
+			<a href="#close" title="Close" class="close">X</a>
+			<h2 id="modal-title">Content editor</h2>
+			<div id="modal-content">
+<!-- 			<textarea id="text-editor" style="width:100%; height:10em"></textarea>
+			<a onclick="_RENDER.editor_save()" href="#close">Save</a> -->
+			</div>
+		</div>
+	</div>
+
+	<div style="display:flex">
+		<div id="page-builder">
+				<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,900,700&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+				<style>
+					main{
+						display:flex;
+						flex-wrap: wrap;
+						font-family: sans;
+						text-align: center;
+						font-family: 'Source Sans Pro', sans-serif;
+					}
+					/* ----------------- */
+					#header{
+						flex:0 0 50%;
+						color:#fff;						
+					}
+					#header .gr-body{
+						height:100%;
+						display:flex;						
+					}
+					#header header{
+						height:100%;	
+						flex: 0 0 100%;	
+						background-position: center;				
+						background-size: cover;
+					}
+					#header header .mask{
+						height:100%;
+						display:flex;
+						align-items:center;
+						justify-content:center;						
+						background-color: rgba(0,0,0,0.6);
+					}
+					#header h2{
+						font-weight: 900;
+						font-size:2.5em;
+						text-transform: uppercase;
+						line-height:1em;
+						padding:0em 5%;
+					}
+
+					/* ----------------- */
+					#header-pin{
+						flex:0 0 50%;
+					}
+					#content{
+						flex:0 0 100%;
+					}
+					#header-pin article, #content article{
+						font-weight: 300;
+						padding:0em 10%;
+						padding-bottom: 4em;
+						border-bottom: 1px solid #aaa;
+					}					
+					.article-header-decorator{
+						width:50%;
+						height:4em;
+						border-right:1px solid #aaa;
+						margin-bottom:2em;
+					}
+					#header-pin p, #content p{
+						margin:2em;
+						font-size: 0.9em
+					}
+					/* ----------------- */
+					#second-promo{
+						flex:0 0 100%;
+						color:#fff;	
+					}
+					#second-promo header{
+						flex: 0 0 100%;	
+						background-position: center;				
+						background-size: cover;
+					}
+					#second-promo header .mask{
+						background-color: rgba(0,0,0,0.6);
+					}
+					#second-promo h2{
+						font-weight: 900;
+						font-size:2.5em;
+						text-transform: uppercase;
+						line-height:1em;
+						padding:3em 5%;
+						margin:0;
+					}
+		
+					
+				</style>
+				<!-- !!! Page boilerplate -->
+				<main>
+					<section id="header">		
+					</section>
+					<section id="header-pin">		
+					</section>
+					<section id="content">		
+					</section>
+					<section id="second-promo">		
+					</section>
+					<section id="footer">		
+					</section>
+				</main>
+				<script>
+					_PBuilder.init({
+						'header':{							
+							'default_component':'header',
+							'extended_default_component':true,
+							'dragdrop':true,
+							'remove':true,
+							'edit_this':true
+						},
+						'header-pin':{
+							'default_component':'article',
+							'extended_default_component':true,
+							'dragdrop':true,
+							'remove':true,
+							'edit_this':true
+						},
+						'content':{
+							'default_component':'article',
+							'extended_default_component':true,
+							'dragdrop':true,
+							'remove':true,
+							'edit_this':true
+						},
+						'second-promo':{
+							'default_component':'header',
+							'extended_default_component':true,
+							'dragdrop':true,
+							'remove':true,
+							'edit_this':true
+						},
+						'footer':{
+							'default_component':'article',
+							'extended_default_component':true
+						}
+					});
+				</script>
+				<!-- !!! End Page boilerplate -->
+		</div>
+		<div id="inspector" style="overflow:hidden;  padding:1em">
+			Inspector
+			<pre id="inspector-content" style="font-size:9px;"></pre>
+		</div>
+	</div>
+	
+</body>
+</html>
+<!--
+/* add:
+/* https://blueimp.github.io/Gallery/
