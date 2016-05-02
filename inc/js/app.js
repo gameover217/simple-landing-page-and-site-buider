@@ -1,4 +1,5 @@
 //var path = send_obj.path;
+
 var path = "";
 var new_object = [{
 		"title": "Propably best new article on the internet!",
@@ -37,7 +38,7 @@ var _PBuilder = {
 	'data':{},
 	'schema':{},
 	'loaded_components':{},
-	'counter':0,
+	'load_counter':0,
 	'move_element':{
 		'from':{
 			'section':'section_id',
@@ -50,13 +51,16 @@ var _PBuilder = {
 	},
 	/* 1 INIT - load content data */
 	init: function(schema){
-
-		_this = this; _this.schema = schema;
+		_this = this; _this.schema = schema; this.load_counter = 0;
 		/* Render App from file*/
-		loadFile( function(response) {
-			//render_app_callback(JSON.parse(response));
-			_this.init_Callback(JSON.parse(response));
-		}, path+'data-base/composition1.json');
+		if(localStorage.actual_landing_data){
+			this.init_Callback(JSON.parse(localStorage.actual_landing_data));
+		}else{
+			loadFile( function(response) {
+				localStorage.actual_landing_data = response;
+				_this.init_Callback(JSON.parse(response));
+			}, path+'data-base/composition1.json');
+		} 		
 	},
 	/* 2 INIT callback - update app object */
 	init_Callback : function(data){
@@ -68,16 +72,22 @@ var _PBuilder = {
 	},	
 	/* 3 Load components (templates) to render */
 	load_components: function(){
+		/* TODO & WARNING - dont load loaded (existing) components */
+		console.log('## LOAD COMPONENTS ##');
+		console.log(this.schema);
 		_this = this;
-		var section_name = Object.keys(this.schema)[this.counter];
+		var section_name = Object.keys(this.schema)[this.load_counter];
+		console.log('section_name:'+section_name);
 		if(section_name == undefined){
+			console.log('components loaded');
 			this.load_components_callback();
 		}else{
 			var comp_name = this.schema[ section_name ]['default_component'];
+			console.log('load compoent:'+comp_name);
 			loadFile( function(response) {
 				var schema_el_length = Object.keys(_this.schema).length;
 				_this.loaded_components[comp_name] = response;
-				_this.counter++;
+				_this.load_counter++;
 				_this.load_components();
 			}, path + 'components/' + comp_name + '.doT.html'); 
 		}
@@ -85,7 +95,8 @@ var _PBuilder = {
 	/* 3 Load components callback - RUN APP */
 	load_components_callback: function(){
 		/* render defaults components */
-		for (section in this.schema){	
+		var to_drag_and_drop = [];
+		for (section in this.schema){			
 			/* set editable section */
 			if(this.schema[section].new){
 				out = '<div onclick="_PBuilder.add_new(this)" style="position:absolute; margin-left:-1.1em; font-size:2em; text-shadow:0 0 1px #fff" data-add="'+section+'">';
@@ -102,22 +113,27 @@ var _PBuilder = {
 			   		_PBuilder.render(data, tpl_part, section);
 				});
 			}
-		}
-		this.dragobj = dragula([
-			document.getElementById('header'),
-			document.getElementById('header-pin'),
-			document.getElementById('content'),
-			document.getElementById('second-promo'),
-			document.getElementById('footer')]
+			if(this.schema[section].dragdrop){
+				to_drag_and_drop.push(document.getElementById(section));
+			}
+		}		
+		this.dragobj = dragula(to_drag_and_drop
 		).on('drag', function (el) {
 			_PBuilder.moved_element(el,'from');
 		}).on('drop', function (el) {
 			_PBuilder.moved_element(el,'to');
 			save_local_grid();
 		});	
+	},
+	load_html : function(packagename){
+		loadFile( function(html_response) {
+			document.getElementById("page-builder").innerHTML = html_response;
+			var tag = document.createElement("script");
+			tag.src = path + 'boiler-plates/' + packagename + '/site-script.js';
+			document.getElementsByTagName("head")[0].appendChild(tag);
+		}, path + 'boiler-plates/' + packagename + '/site.html'); 
 	},	
 	render: function(data, tpl_part, target){	
-		console.log(target);	
 		var out = '';
 		out += '<div class="gr-body">';
 		/* check is this section have delete */		
@@ -222,7 +238,7 @@ var _PBuilder = {
 		this.e_obj.constrols = this.e_obj.element.querySelectorAll('.toedit');
 		/* render form */
 		this.build_elem_form(this.e_obj);
-		/* warning - always run uploader if run edit window */
+		/* TODO & WARNING - always run uploader if run edit window */
 		var myDropzone = new Dropzone("div#dropzone", { 
 			url: "upload.php",
 			thumbnailWidth: "400"
@@ -317,7 +333,11 @@ var _PBuilder = {
 }
 
 var save_local_grid = function(){
-	console.log('-- save grid --');
+	
+	console.log('-- storage data on local browser object --');
+	localStorage.actual_landing_data =  JSON.stringify(_PBuilder.data);
+
+	console.log('-- console log --');
 	var str = JSON.stringify(_PBuilder.data, null, 2);
 	document.getElementById('inspector-content').innerHTML = "##:DATA\n";
 	document.getElementById('inspector-content').innerHTML += str;

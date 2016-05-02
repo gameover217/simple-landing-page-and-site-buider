@@ -1,0 +1,26 @@
+_PBuilder.init({
+	'header':{							
+		'default_component':'header-full',
+		'extended_default_component':true,
+		'dragdrop':true,
+		'remove':true,
+		'edit_this':true,
+		'new':true
+	},	
+	'content':{
+		'default_component':'article-full',
+		'extended_default_component':true,
+		'dragdrop':true,
+		'remove':true,
+		'edit_this':true,
+		'new':true
+	},	
+	'footer':{
+		'dragdrop':true,
+		'default_component':'article',
+		'extended_default_component':true,
+		'remove':true,
+		'edit_this':true,
+		'new':true
+	}
+});

@@ -18,8 +18,16 @@ body{
 }
 #main-header h1, #main-header h2{
 	margin:0;
+	font-weight: normal;
 }
-
+#main-header a{
+	color:#71B6D8;
+	text-decoration: none;
+	font-size:1.3em;
+}
+#main-header a:hover{
+	color:#0077B1;
+}
 #templates{
 	position:fixed;
 	height:70%;
@@ -61,11 +69,38 @@ body{
 }
 #page-builder.zoom{
 	transform:scale(0.4);
-	
 }
-
 #gui_zoom_button.active{
 	color:#fff;
+}
+
+
+
+
+/* Mobobile editor RULEZ !!!!! */
+@media only screen
+and (min-device-width : 768px)
+and (max-device-width : 1024px) {
+/* Styles */
+	#page-builder{
+		font-size:0.6em;
+		width:90%;
+		margin:10% auto 0 auto;
+		box-shadow:none;
+	}
+	#templates, #properties{
+		height:85%;
+	}
+}
+@media only screen
+and (max-device-width : 640px){
+	#page-builder{
+		margin:15% auto 0 auto;
+		font-size:0.6em;
+	}
+	#page-builder section{
+		flex: 0 0 100%;		
+	}
 }
 
 
@@ -75,8 +110,8 @@ body{
 	background-color: #333;
 	color:yellow;
 	margin:2em auto;
-	width:90%;
-	border:5px solid #333;
+	width:80%;
+	border:15px solid #333;
 }
 #inspector-content{
 	color:#ddd;
@@ -122,6 +157,11 @@ section:hover{
 	text-decoration: none;
 	text-transform: uppercase;
 }
+
+
+
+
+
 
 /* ELEMENTS */
 .gu-mirror{
