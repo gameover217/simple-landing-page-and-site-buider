@@ -29,6 +29,10 @@ body{
 	padding:0.2em;
 	color:#333;
 	cursor:pointer;
+	text-align:right;
+}
+#templates:hover{
+	width:1.7em;
 }
 #properties{
 	position:fixed;
@@ -40,6 +44,9 @@ body{
 	color:#333;
 	right:0;
 	cursor:pointer;
+}
+#properties:hover{
+	width:1.7em;
 }
 
 #page-builder{
@@ -63,9 +70,13 @@ body{
 
 
 #inspector{
+	box-shadow:0px 0px 5px #333;
 	font-family:courier;
 	background-color: #333;
 	color:yellow;
+	margin:2em auto;
+	width:90%;
+	border:5px solid #333;
 }
 #inspector-content{
 	color:#ddd;
