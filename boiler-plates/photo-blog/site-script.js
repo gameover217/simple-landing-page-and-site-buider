@@ -1,6 +1,14 @@
 _PBuilder.init({
 	'header':{							
-		'default_component':'header-full',
+		'default_component':'header-light-big',
+		'extended_default_component':true,
+		'dragdrop':true,
+		'remove':true,
+		'edit_this':true,
+		'new':true
+	},	
+	'header-pin':{
+		'default_component':'text',
 		'extended_default_component':true,
 		'dragdrop':true,
 		'remove':true,
@@ -14,15 +22,8 @@ _PBuilder.init({
 		'remove':true,
 		'edit_this':true,
 		'new':true
-	},
-	'header-pin':{
-		'default_component':'text',
-		'extended_default_component':true,
-		'dragdrop':true,
-		'remove':true,
-		'edit_this':true,
-		'new':true
-	},		
+	},	
+	
 	'footer':{
 		'dragdrop':true,
 		'default_component':'article',

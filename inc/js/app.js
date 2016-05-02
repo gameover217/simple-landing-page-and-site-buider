@@ -51,6 +51,8 @@ var _PBuilder = {
 	},
 	/* 1 INIT - load content data */
 	init: function(schema){
+		
+
 		_this = this; _this.schema = schema; this.load_counter = 0;
 		/* Render App from file*/
 		if(localStorage.actual_landing_data){
@@ -125,15 +127,22 @@ var _PBuilder = {
 			save_local_grid();
 		});	
 	},
+	/* Load new boilerplate */
 	load_html : function(packagename){
+				
 		loadFile( function(html_response) {
+
+			
+
 			document.getElementById("page-builder").innerHTML = html_response;
 			var tag = document.createElement("script");
 			tag.src = path + 'boiler-plates/' + packagename + '/site-script.js';
 			document.getElementsByTagName("head")[0].appendChild(tag);
+
 		}, path + 'boiler-plates/' + packagename + '/site.html'); 
 	},	
-	render: function(data, tpl_part, target){	
+	render: function(data, tpl_part, target){
+
 		var out = '';
 		out += '<div class="gr-body">';
 		/* check is this section have delete */		
@@ -160,6 +169,8 @@ var _PBuilder = {
 		}
 		/* add new element */
 		document.getElementById(target).innerHTML += tempHTML(tempCONTENT);
+
+		
 
 	},
 	/* ------------------------ */
@@ -386,8 +397,7 @@ var getClosest = function (elem, selector) {
 
 
 function gui_zoom(){
- document.getElementById('page-builder').classList.toggle('zoom');
- document.getElementById('gui_zoom_button').classList.toggle('active');
-
- 
+	document.getElementById('page-builder-wraper').classList.toggle('zoom');
+	document.getElementById('gui_zoom_button').classList.toggle('active');
+	window.location.href="#";
 }
