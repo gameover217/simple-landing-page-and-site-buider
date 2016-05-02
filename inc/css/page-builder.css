@@ -1,3 +1,7 @@
+.gu-mirror{
+	
+	transform:scale(0.6);
+}
 .gr-body{
 	
 }
@@ -23,6 +27,22 @@
 	text-transform: uppercase;
 }
 
+
+.main-ico{
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	cursor:pointer;
+	border:1px solid #aaa;
+	margin:0.2em;
+	padding:0.6em;
+	float:right;
+	color:#aaa;
+}
+.main-ico:hover{
+	color:#fff;
+	}
 
 .modalDialog {
 	position: fixed;   
@@ -155,4 +175,38 @@ body{
 }
 #inspector-content{
 	color:#ddd;
+}
+
+/* Edit Icons */
+.section_add{
+	position:relative;
+	cursor:pointer;
+}
+.section_add:before{
+	text-shadow:0 0 1px #000;
+	color:#eee;
+	position:absolute;
+	right:0;
+	font-family: 'Material Icons';
+	content:'add_box';
+	font-weight: normal;
+	font-style: normal;
+	font-size: 2em;  /* Preferred icon size */
+	display: inline-block;
+	line-height: 1;
+	text-transform: none;
+	letter-spacing: normal;
+	word-wrap: normal;
+	white-space: nowrap;
+	direction: ltr;
+	/* Support for all WebKit browsers. */
+	-webkit-font-smoothing: antialiased;
+	/* Support for Safari and Chrome. */
+	text-rendering: optimizeLegibility;
+
+	/* Support for Firefox. */
+	-moz-osx-font-smoothing: grayscale;
+
+	/* Support for IE. */
+	font-feature-settings: 'liga';
 }

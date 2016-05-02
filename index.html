@@ -25,11 +25,6 @@ License: GPL2
 	<script type="text/javascript" src="inc/js/app.js"></script>
 	<script type="text/javascript" src="inc/js/dropzone.min.js"></script>
 
-	<style>
-		.gu-mirror{
-			transform:scale(0.6);
-		}
-	</style>
 
 	<div id="openModal" class="modalDialog">
 		<div>	
@@ -43,8 +38,18 @@ License: GPL2
 	</div>
 
 	<div id="main-header">
+		<div class="main-ico" onclick="alert('lock on demo')">
+			<i class="material-icons">&#xE2C0;</i>
+		</div>
+		<div class="main-ico" onclick="alert('lock on demo')">
+			<i class="material-icons">&#xE8B6;</i>
+		</div>
+		<div class="main-ico" onclick="alert('lock on demo')">
+			<i class="material-icons">&#xE8F4;</i>
+		</div>
 		<h1>Simple landing page and site buider</h1>
 		<h2>Ultra light static websites crator</h2>
+		
 	</div>
 	<div style="display:flex">
 		<div id="page-builder">
@@ -61,11 +66,11 @@ License: GPL2
 					#header{
 						flex:0 0 50%;
 						color:#fff;						
-					}
+					}					
 					#header .gr-body{
 						height:100%;
 						display:flex;						
-					}
+					}					
 					#header header{
 						height:100%;	
 						flex: 0 0 100%;	
@@ -86,6 +91,8 @@ License: GPL2
 						line-height:1em;
 						padding:0em 5%;
 					}
+
+					
 
 					/* ----------------- */
 					#header-pin{
@@ -154,28 +161,32 @@ License: GPL2
 							'extended_default_component':true,
 							'dragdrop':true,
 							'remove':true,
-							'edit_this':true
+							'edit_this':true,
+							'new':true
 						},
 						'header-pin':{
 							'default_component':'article',
 							'extended_default_component':true,
 							'dragdrop':true,
 							'remove':true,
-							'edit_this':true
+							'edit_this':true,
+							'new':true
 						},
 						'content':{
 							'default_component':'article',
 							'extended_default_component':true,
 							'dragdrop':true,
 							'remove':true,
-							'edit_this':true
+							'edit_this':true,
+							'new':true
 						},
 						'second-promo':{
 							'default_component':'header',
 							'extended_default_component':true,
 							'dragdrop':true,
 							'remove':true,
-							'edit_this':true
+							'edit_this':true,
+							'new':true
 						},
 						'footer':{
 							'default_component':'article',

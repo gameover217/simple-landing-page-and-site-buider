@@ -1,5 +1,12 @@
 //var path = send_obj.path;
 var path = "";
+var new_object = [{
+		"title": "Propably best new article on the internet!",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        "image": "inc/img/unsplash.example2.jpeg",
+        "linkname": "Learn more",
+        "linktarget": "html://google.com"
+   	}];
 
 var loadFile = function (callback, file) {
     var xobj = new XMLHttpRequest();
@@ -43,6 +50,7 @@ var _PBuilder = {
 	},
 	/* 1 INIT - load content data */
 	init: function(schema){
+
 		_this = this; _this.schema = schema;
 		/* Render App from file*/
 		loadFile( function(response) {
@@ -78,6 +86,15 @@ var _PBuilder = {
 	load_components_callback: function(){
 		/* render defaults components */
 		for (section in this.schema){	
+			/* set editable section */
+			if(this.schema[section].new){
+				out = '<div onclick="_PBuilder.add_new(this)" style="position:absolute; margin-left:-1.1em; font-size:2em; text-shadow:0 0 1px #fff" data-add="'+section+'">';
+				out += '<i class="material-icons">&#xE146;</i></div>';
+				document.getElementById(section).outerHTML += out;
+				//document.getElementById(section).className += " section_add";
+				//document.getElementById(section).onclick = this.add_new;				
+			}
+			/* get templates and render it */
 			var tpl_part = this.loaded_components[this.schema[section]['default_component']];	
 			var content = this.data[ this.J_kIx(section) ];
 			if(content){
@@ -98,16 +115,17 @@ var _PBuilder = {
 			_PBuilder.moved_element(el,'to');
 			save_local_grid();
 		});	
-	},
-	render: function(data, tpl_part, target){		
+	},	
+	render: function(data, tpl_part, target){	
+		console.log(target);	
 		var out = '';
 		out += '<div class="gr-body">';
 		/* check is this section have delete */		
 		if(this.schema[target].remove){
-			out += '<div class="remove" onclick="_PBuilder.remove(this,\''+this.schema[target].remove+'\')"><a href="#"><i class="material-icons">&#xE92B;</i></a></div>';
+			out += '<div class="remove" onclick="_PBuilder.remove(this,\''+this.schema[target].remove+'\')"><a href="#none"><i class="material-icons">&#xE92B;</i></a></div>';
 		}
 		if(this.schema[target].edit_this){
-			out += '<div class="edit" onclick="_PBuilder.edit(this)"><a href="#openModal"><i class="material-icons">&#xE254;</i></a></div>';
+			out += '<div class="edit" onclick="_PBuilder.edit(this); return false"><a href="#openModal"><i class="material-icons">&#xE254;</i></a></div>';
 		}
 		out += tpl_part;
 		out += '</div>';
@@ -177,16 +195,46 @@ var _PBuilder = {
 		'element_index':{},
 		'controls':{}
 	},
-
+	add_new:function(el) {
+		// this to ma byc sekcja;
+		var _t = document.getElementById(el.getAttribute("data-add"));
+		var tpl_part = _PBuilder.loaded_components[_PBuilder.schema[_t.id]['default_component']];	
+		var content = _PBuilder.data[ _PBuilder.J_kIx(_t.id) ];
+		
+		if(content){
+			document.getElementById(_t.id).innerHTML = "";
+			var new_section = new_object.concat(content.elements); 
+			new_section.forEach(function (data, i) {
+		   		_PBuilder.render(data, tpl_part, _t.id);
+			});
+			content.elements = new_section;
+		}else{
+			//alert('iam empty i chuj');
+		}
+	},	
 	edit:function(el){
+
 		window.location.hash = '#openModal';
 		this.e_obj.section = getClosest(el, 'section');
 		this.e_obj.section_index = this.J_kIx(this.e_obj.section.id);
 		this.e_obj.element = getClosest(el, '.gr-body');
 		this.e_obj.element_index = this.DOM_Ix( this.e_obj.element );
-	
 		this.e_obj.constrols = this.e_obj.element.querySelectorAll('.toedit');
+		/* render form */
+		this.build_elem_form(this.e_obj);
+		/* warning - always run uploader if run edit window */
+		var myDropzone = new Dropzone("div#dropzone", { 
+			url: "upload.php",
+			thumbnailWidth: "400"
+		});
 
+		myDropzone.on("complete", function(file) {
+		  //myDropzone.removeFile(file);
+		  alert(file.name);
+		});
+	},
+	build_elem_form: function(e_obj){
+		this.e_obj = e_obj;
 		var out = '<div id="editor-wraper" onkeypress="_PBuilder.editor_keypress(event)">';
 		for( var i = 0; i<this.e_obj.constrols.length; i++){
 			if(this.e_obj.constrols[i].classList.contains('text')){
@@ -208,17 +256,6 @@ var _PBuilder = {
 		out += '<a id="save-content" onclick="_PBuilder.editor_save()" href="#close">Save</a>';
 		out += '</div>';
 		document.getElementById('modal-content').innerHTML = out;
-		
-		/* warning - always run uploader if run edit window */
-		var myDropzone = new Dropzone("div#dropzone", { 
-			url: "upload.php",
-			thumbnailWidth: "400"
-		});
-
-		myDropzone.on("complete", function(file) {
-		  //myDropzone.removeFile(file);
-		  alert(file.name);
-		});
 	},
 	editor_keypress: function(e){
 		if (e.keyCode == 13) {
