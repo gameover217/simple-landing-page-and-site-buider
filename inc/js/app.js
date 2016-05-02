@@ -361,3 +361,13 @@ var getClosest = function (elem, selector) {
     }
     return false;
 };
+
+
+
+
+function gui_zoom(){
+ document.getElementById('page-builder').classList.toggle('zoom');
+ document.getElementById('gui_zoom_button').classList.toggle('active');
+
+ 
+}

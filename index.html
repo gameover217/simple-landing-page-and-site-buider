@@ -39,28 +39,35 @@ License: GPL2
 
 	<div id="main-header">
 
-		<div class="main-ico" onclick="alert('lock on demo')">
+		<div class="main-ico" onclick="alert('RESTART is lock on this demo')">
 			<i class="material-icons">&#xE863;</i>
 			RESTART
 		</div>
-		<div class="main-ico" onclick="alert('lock on demo')">
+		<div class="main-ico" onclick="alert('SAVE is lock on this demo')">
 			<i class="material-icons">&#xE2C0;</i>
 			SAVE
 		</div>
-		<div class="main-ico" onclick="alert('lock on demo')">
+		<div id="gui_zoom_button" class="main-ico" onclick="gui_zoom()">
 			<i class="material-icons">&#xE8B6;</i>
 			ZOOM
 		</div>
-		<div class="main-ico" onclick="alert('lock on demo')">
+		<!-- <div class="main-ico" onclick="alert('PREVIEW is lock on this demo')">
 			<i class="material-icons">&#xE8F4;</i>
 			PREV
-		</div>
+		</div> -->
 		<h1>Simple landing page and site buider</h1>
 		<h2>Ultra light static websites crator</h2>
 		
 	</div>
-	<div style="display:flex">
-		<div id="page-builder">
+
+	<div id="templates" onclick="alert('TEMPLATES is lock on this demo')">
+		<i class="material-icons">&#xE8F1;</i>
+	</div>
+	<div id="properties" onclick='alert("PROPERTIS is lock on this demo\nprototype alilable on\nhttp://mroczna.stronazen.pl/robo-theme-builder-public-dev/")'>
+		<i class="material-icons">&#xE5D2;</i>
+	</div>
+
+		<div id="page-builder" class="">
 				<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,900,700&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
 				<style>
 					main{
@@ -204,11 +211,13 @@ License: GPL2
 				</script>
 				<!-- !!! End Page boilerplate -->
 		</div>
+
+
 		<div id="inspector" style="overflow:hidden;  padding:1em">
 			Inspector
 			<pre id="inspector-content" style="font-size:9px;"></pre>
 		</div>
-	</div>
+
 	
 </body>
 </html>
