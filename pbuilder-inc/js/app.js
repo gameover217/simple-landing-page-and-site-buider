@@ -1,6 +1,6 @@
 //var path = send_obj.path;
 
-var path = "";
+var path = "pbuilder-assets/";
 var new_object = [{
 		"title": "Propably best new article on the internet!",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
