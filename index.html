@@ -13,7 +13,7 @@ License: GPL2
 	<title>Simple landing page and site buider</title>
 	<META name="Description" content="Ultra light static websites crator">
 </head>
-<body>
+<body id="body" onmousedown="_bTrform.on(); _bTrform.body_down(event)" onmousemove="_bTrform.body_move(event)" onmouseup="_bTrform.body_up(event)" >
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="inc/css/dragula.min.css">
@@ -73,7 +73,7 @@ License: GPL2
 	</div>
 
 	<div id="page-builder-wraper">
-		<div id="page-builder" class="">
+		<div id="page-builder" onmousedown="_bTrform.off()" onmousemove="_bTrform.off()" onmouseover="_bTrform.off(); _bTrform.scroll_guardian=true;" onmouseup="_bTrform.on()" onmouseout="_bTrform.scroll_off();">
 				<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,900,700&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
 				<style>
 					main{
