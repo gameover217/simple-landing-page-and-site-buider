@@ -96,6 +96,7 @@ var _PBuilder = {
 	},
 	/* 3 Load components callback - RUN APP */
 	load_components_callback: function(){
+			
 		/* render defaults components */
 		var to_drag_and_drop = [];
 		for (section in this.schema){			
@@ -140,7 +141,7 @@ var _PBuilder = {
 				
 		loadFile( function(html_response) {
 
-			
+
 
 			document.getElementById("page-builder").innerHTML = html_response;
 			var tag = document.createElement("script");
@@ -404,13 +405,19 @@ var getClosest = function (elem, selector) {
 
 
 
-function gui_zoom(){
-	//document.getElementById('page-builder-wraper').classList.toggle('zoom');
-	builder_transform.zoom = 0.5;
 
+function gui_designers(){
 	document.getElementById('gui_zoom_button').classList.toggle('active');
-	window.location.href="#";
+	if(document.getElementById('gui_zoom_button').classList.contains("active")){
+		_bTrform.init();
+			
+	}else{
+		_bTrform.destroy();
+	}
+	//window.location.href="#";
+
 }
+
 
 
 function dragstart_body_handler(e){
@@ -436,7 +443,7 @@ function dragstart_body_handler(e){
 }
 
 
-document.getElementById("body").setAttribute('style','overflow: hidden; height:100%');
+/* DESIGN MODE */
 var _bTrform = {
 	move_guardian:false,
 	on_guardian:true,
@@ -447,6 +454,49 @@ var _bTrform = {
 		startX:0,
 		startY:0,
 		scale:1
+	},
+	init:function(){
+		var _pb = document.getElementById('page-builder');
+		var _bd = document.getElementById("body");
+		_bd.setAttribute('style','overflow: hidden; height:100%; cursor: -webkit-grab; cursor: -moz-grab;');
+		
+		_pb.onmousedown = function(){ _bTrform.off(); }
+		_pb.onmousemove = function(){ _bTrform.off(); } 
+		_pb.onmouseover = function(){ _bTrform.off(); _bTrform.scroll_guardian=true; }
+		_pb.onmouseup = function(){ _bTrform.on(); }
+		_pb.onmouseout = function(){_bTrform.scroll_off(); }
+		
+		_bd.onmousedown = function(event){ _bTrform.on(); _bTrform.body_down(event) }
+		_bd.onmousemove = function(event){ _bTrform.body_move(event) }
+		_bd.onmouseup = function(event){ _bTrform.body_up(event) }
+
+		if (_bd.addEventListener) {
+			_bd.addEventListener("mousewheel", _bTrform.MouseWheelHandler, false);
+			_bd.addEventListener("DOMMouseScroll", _bTrform.MouseWheelHandler, false);
+		}
+		else _bd.attachEvent("onmousewheel", _bTrform.MouseWheelHandler);
+	},
+	destroy:function(){
+		this.data.scale = 1;
+		this.data.x = 0;
+		this.data.y = 0;
+		this.transform();
+
+		var _pb = document.getElementById('page-builder');
+		var _bd = document.getElementById("body");
+		_bd.setAttribute('style','overflow: scroll; height:auto;');
+		_pb.onmousedown = function(){  }
+		_pb.onmousemove = function(){  } 
+		_pb.onmouseover = function(){  }
+		_pb.onmouseup = function(){  }
+		_pb.onmouseout = function(){ }
+		
+		_bd.onmousedown = function(event){ }
+		_bd.onmousemove = function(event){ }
+		_bd.onmouseup = function(event){ }
+		_bd.removeEventListener("mousewheel", _bTrform.MouseWheelHandler);
+		_bd.removeEventListener("DOMMouseScroll", _bTrform.MouseWheelHandler);
+		_bd.removeEventListener("onmousewheel", _bTrform.MouseWheelHandler);
 	},
 	body_down:function(e){
 		this.move_guardian = true;
@@ -472,7 +522,7 @@ var _bTrform = {
 	},
 	MouseWheelHandler:function(e){
 		if(_bTrform.scroll_guardian==false){
-			document.getElementById("body").setAttribute('style','overflow: hidden; height:100%');
+			document.getElementById("body").setAttribute('style','overflow: hidden; height:100%; cursor: -webkit-grab; cursor: -moz-grab;');
 			var evt=window.event || e //equalize event object
 	    	var delta=evt.detail? evt.detail*(-120) : evt.wheelDelta;
 	    	if(delta>0){
@@ -495,7 +545,7 @@ var _bTrform = {
 	},
 	scroll_off:function(){
 		this.scroll_guardian=false;
-		document.getElementById("body").setAttribute('style','overflow: hidden; height:100%');
+		document.getElementById("body").setAttribute('style','overflow: hidden; height:100%; cursor: -webkit-grab; cursor: -moz-grab;');
 	},
 	off:function(){
 		this.on_guardian = false;
@@ -513,21 +563,15 @@ var _bTrform = {
 		
 		var out = "";
 		//out += "background-position: "+this.data.x+"px "+this.data.y+"px;";
-		out += "overflow: hidden; height:100%";
+		out += "overflow: hidden; height:100%; cursor: -webkit-grab; cursor: -moz-grab;";
 		document.getElementById("body").setAttribute('style',out);
-
 
 	}
 }
 
 
+			
 
-var myimage = document.getElementById("body");
-if (myimage.addEventListener) {
-	myimage.addEventListener("mousewheel", _bTrform.MouseWheelHandler, false);
-	myimage.addEventListener("DOMMouseScroll", _bTrform.MouseWheelHandler, false);
-}
-else myimage.attachEvent("onmousewheel", _bTrform.MouseWheelHandler);
 
 
 
