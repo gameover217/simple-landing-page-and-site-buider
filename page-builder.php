@@ -14,6 +14,7 @@
 	<script type="text/javascript" src="pbuilder-inc/js/medium-editor.min.js"></script>
 	<script type="text/javascript" src="pbuilder-inc/js/doT.min.js"></script>
 	<script type="text/javascript" src="pbuilder-inc/js/app.js"></script>
+	<script type="text/javascript" src="pbuilder-inc/js/design_mode.js"></script>
 	<script type="text/javascript" src="pbuilder-inc/js/dropzone.min.js"></script>
 
 

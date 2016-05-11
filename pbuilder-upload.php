@@ -1,7 +1,7 @@
 <?php
 $ds = DIRECTORY_SEPARATOR;  
  
-$storeFolder = 'upload';   
+$storeFolder = 'pbuilder-upload';   
  
 if (!empty($_FILES)) {
      

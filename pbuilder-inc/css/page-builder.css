@@ -238,7 +238,7 @@ section:hover{
 	right: 0;
 	bottom: 0;
 	left: 0;
-	background: rgba(255, 255, 255, 0.8);
+	background: rgba(255, 255, 255, 0.9);
 	z-index: 99999;
 	opacity:0;
 	pointer-events: none;
@@ -269,7 +269,6 @@ section:hover{
 	background: -ms-linear-gradient(-45deg, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
 	background: linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed', GradientType=1 );
-
 }
 .modalDialog input, .modalDialog textarea {
 	width:98%;
@@ -279,7 +278,13 @@ section:hover{
 	font-family: sans;
 	padding:0.5em;
 }
-
+.blur{
+	-webkit-filter: blur(5px);
+	-moz-filter: blur(5px);
+	-o-filter: blur(5px);
+	-ms-filter: blur(5px);
+	filter: blur(5px);
+}
 .close {
     background-color: #fff;
     color: #222;
@@ -303,14 +308,16 @@ section:hover{
 /* UPLOADER */
 #dropzone{
 	font-family: sans;
-	border:1px solid #666;
-	font-size: 1em;
-	padding:0.3em;
-	width:98%;
-	margin-bottom:0.1em;
-	background-color: #888;
-	color:#fff;
-	cursor:pointer;
+	border: 1px solid rgb(228, 228, 228);
+	font-size: 0.7em;
+	padding: 0.4em 0.6em;
+	margin-bottom: 0.1em;
+	background-color: rgb(249, 249, 249);
+	color: rgb(150, 150, 150);
+	cursor: pointer;
+	border-radius: 3px;
+	line-height: 2em;
+	box-shadow: 0px 0px 3px rgb(231, 231, 231);
 }
 .dz-image img{
 	width:100%;
@@ -324,6 +331,15 @@ section:hover{
 .dz-details{
 	display:inline-block;
 	display:flex;
+}
+#exist-preview{
+	height:200px; 
+	background-size:cover;
+	pointer-events: none;
+	background-position:center;
+}
+.dz-preview{
+	pointer-events: none;
 }
 
 

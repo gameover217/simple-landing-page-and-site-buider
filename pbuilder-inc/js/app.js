@@ -3,12 +3,12 @@ var assets_path = "pbuilder-assets/";
 var upload_path = "pbuilder-upload/";
 
 /*clear localsorage*/
-//localStorage.clear();
+localStorage.clear();
 
 var new_object = [{
 		"title": "Propably best new article on the internet!",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-        "image": upload_path+"unsplash.example2.jpeg",
+        "background": upload_path+"unsplash.example2.jpeg",
         "linkname": "Learn more",
         "linktarget": "html://google.com"
    	}];
@@ -182,9 +182,6 @@ var _PBuilder = {
 		}
 		/* add new element */
 		document.getElementById(target).innerHTML += tempHTML(tempCONTENT);
-
-		
-
 	},
 	/* ------------------------ */
 	/* drag and drop controller */
@@ -233,7 +230,8 @@ var _PBuilder = {
 		'section_index':{},
 		'element':{},
 		'element_index':{},
-		'controls':{}
+		'controls':{},
+		'data_fragment':{}
 	},
 	add_new:function(el) {
 		// this to ma byc sekcja;
@@ -253,13 +251,16 @@ var _PBuilder = {
 		}
 	},	
 	edit:function(el){
-
+		//document.getElementById('body').classList.toggle('blur');
 		window.location.hash = '#openModal';
 		this.e_obj.section = getClosest(el, 'section');
 		this.e_obj.section_index = this.J_kIx(this.e_obj.section.id);
 		this.e_obj.element = getClosest(el, '.gr-body');
 		this.e_obj.element_index = this.DOM_Ix( this.e_obj.element );
 		this.e_obj.constrols = this.e_obj.element.querySelectorAll('.toedit');
+		this.e_obj.data_fragment = this.data[this.e_obj.section_index].elements[this.e_obj.element_index];
+		
+
 		/* render form */
 		this.build_elem_form(this.e_obj);
 		/* TODO & WARNING - always run uploader if run edit window */
@@ -269,8 +270,11 @@ var _PBuilder = {
 		});
 
 		myDropzone.on("complete", function(file) {
-		  //myDropzone.removeFile(file);
-		  alert(file.name);
+			//remove background example
+			//myDropzone.removeFile(file);
+			document.getElementById('exist-preview').style.display = 'none';
+			document.getElementById('dropzone').setAttribute("value", upload_path+file.name); 
+
 		});
 	},
 	build_elem_form: function(e_obj){
@@ -284,8 +288,13 @@ var _PBuilder = {
 				out += '<textarea data-edit-controll="true" name="'+this.e_obj.constrols[i].getAttribute("data-key")+'">'+this.e_obj.constrols[i].innerHTML+'</textarea><br>';
 			}
 			if(this.e_obj.constrols[i].classList.contains('background')){
-				out += '<div id="dropzone" data-edit-controll="true" name="'+this.e_obj.constrols[i].getAttribute("data-key")+'" value="">Background image add or edit</div>';
+				
+				out += '<div id="dropzone" data-edit-controll="true" name="'+this.e_obj.constrols[i].getAttribute("data-key")+'" value="'+this.e_obj.data_fragment[this.e_obj.constrols[i].getAttribute("data-key")]+'">';
+				out += 'add or edit background';
+				out += '<div id="exist-preview" style="background-image:url(\''+this.e_obj.data_fragment.background+'\')"></div>';
+				out += '</div>';
 			}
+			console.log(this.e_obj.data_fragment);
 		}
 		/* parse template */
 		/*var usage_template = this.loaded_components[this.schema[section.id]['default_component']];
@@ -305,17 +314,35 @@ var _PBuilder = {
 	},
 	editor_save:function(){
 		var edited_controlls = document.querySelectorAll('[data-edit-controll]');
+		console.log("edited_controlls");	
+		console.log(edited_controlls);
 		for( var i = 0; i<edited_controlls.length; i++){
-			var _name = edited_controlls[i].name;
-			var _value = edited_controlls[i].value;
 			
+			if( edited_controlls[i].getAttribute("name")=='background'){
+				
+				var _name = edited_controlls[i].getAttribute("name");
+				var _value = edited_controlls[i].getAttribute("value");
+			
+			}else{
+				
+				var _name = edited_controlls[i].name;
+				var _value = edited_controlls[i].value;
+			
+			}
 			/* update JSON */
 			this.data[this.e_obj.section_index].elements[this.e_obj.element_index][_name] = _value;
 			/* update DOM */
-			
 			if(document.querySelector("[data-key="+_name+"]") != null){
-				this.e_obj.element.querySelector("[data-key="+_name+"]").innerHTML = _value;
+				
+				if(_name == 'background'){
+					var out = "background-image:url('"+_value+"');";
+					this.e_obj.element.querySelector("[data-key="+_name+"]").setAttribute('style',out);
+				}else{
+					this.e_obj.element.querySelector("[data-key="+_name+"]").innerHTML = _value;
+				}
+				
 			}
+			
 		}
 		save_local_grid();
 		//console.log(this.J_kIx(this.edited_obj.section));
@@ -407,9 +434,6 @@ var getClosest = function (elem, selector) {
 };
 
 
-
-
-
 function gui_designers(){
 	document.getElementById('gui_zoom_button').classList.toggle('active');
 	if(document.getElementById('gui_zoom_button').classList.contains("active")){
@@ -420,7 +444,6 @@ function gui_designers(){
 	}
 	window.location.href="#";
 }
-
 
 function gui_save(){
 	var data = window.btoa(JSON.stringify(_PBuilder.data));
@@ -439,160 +462,3 @@ function gui_save(){
 			//_this.init_Callback(JSON.parse(response));
 	}, 'render-static.php?data='+data+'&schema='+schema+'&tid='+window.transaction_id);
 }
-
-
-function dragstart_body_handler(e){
-	var _on = function (el, event, fn) {
-		//document.attachEvent ? el.attachEvent('on' + event, fn) : el.addEventListener(event, fn, !0);
-		
-	};
-	_on(document, 'mousemove', function (e) {
-		console.log(e);
-/*			e.pageX = e.pageX || e.clientX + (document.documentElement.scrollLeft ?
-			document.documentElement.scrollLeft :
-			document.body.scrollLeft);
-			e.pageY = e.pageY || e.clientY + (document.documentElement.scrollTop ?
-			document.documentElement.scrollTop :
-			document.body.scrollTop);
-			el.style.top = (e.pageY - dragoffset.y) + "px";
-			el.style.left = (e.pageX - dragoffset.x) + "px";*/
-			
-		
-	});
-
-	
-}
-
-
-/* DESIGN MODE */
-var _bTrform = {
-	move_guardian:false,
-	on_guardian:true,
-	scroll_guardian:false,
-	data:{
-		x:0,
-		y:0,
-		startX:0,
-		startY:0,
-		scale:1
-	},
-	init:function(){
-		var _pb = document.getElementById('page-builder');
-		var _bd = document.getElementById("body");
-		_bd.setAttribute('style','overflow: hidden; height:100%; cursor: -webkit-grab; cursor: -moz-grab;');
-		
-		_pb.onmousedown = function(){ _bTrform.off(); }
-		_pb.onmousemove = function(){ _bTrform.off(); } 
-		_pb.onmouseover = function(){ _bTrform.off(); _bTrform.scroll_guardian=true; }
-		_pb.onmouseup = function(){ _bTrform.on(); }
-		_pb.onmouseout = function(){_bTrform.scroll_off(); }
-		
-		_bd.onmousedown = function(event){ _bTrform.on(); _bTrform.body_down(event) }
-		_bd.onmousemove = function(event){ _bTrform.body_move(event) }
-		_bd.onmouseup = function(event){ _bTrform.body_up(event) }
-
-		if (_bd.addEventListener) {
-			_bd.addEventListener("mousewheel", _bTrform.MouseWheelHandler, false);
-			_bd.addEventListener("DOMMouseScroll", _bTrform.MouseWheelHandler, false);
-		}
-		else _bd.attachEvent("onmousewheel", _bTrform.MouseWheelHandler);
-	},
-	destroy:function(){
-		this.data.scale = 1;
-		this.data.x = 0;
-		this.data.y = 0;
-		this.transform();
-
-		var _pb = document.getElementById('page-builder');
-		var _bd = document.getElementById("body");
-		_bd.setAttribute('style','overflow: scroll; height:auto;');
-		_pb.onmousedown = function(){  }
-		_pb.onmousemove = function(){  } 
-		_pb.onmouseover = function(){  }
-		_pb.onmouseup = function(){  }
-		_pb.onmouseout = function(){ }
-		
-		_bd.onmousedown = function(event){ }
-		_bd.onmousemove = function(event){ }
-		_bd.onmouseup = function(event){ }
-		_bd.removeEventListener("mousewheel", _bTrform.MouseWheelHandler);
-		_bd.removeEventListener("DOMMouseScroll", _bTrform.MouseWheelHandler);
-		_bd.removeEventListener("onmousewheel", _bTrform.MouseWheelHandler);
-	},
-	body_down:function(e){
-		this.move_guardian = true;
-		this.data.startX = e.clientX - this.data.x;
-		this.data.startY = e.clientY - this.data.y;
-	},
-	body_up:function(e){
-		this.move_guardian = false;
-		this.data.startX = e.clientX;
-		this.data.startY = e.clientY;
-	},
-	body_move:function(e){
-		if(this.on_guardian){			
-			if(this.move_guardian){
-				this.data.x = e.clientX-this.data.startX;
-				this.data.y = e.clientY-this.data.startY;
-				//document.getElementById("page-builder-wraper").setAttribute('style','transform:rotate(90deg); -webkit-transform: rotate(90deg)') ;
-				//document.getElementById("page-builder-wraper").style.webkitTransform = "translate2d("++",0)";
-				//document.getElementById("page-builder-wraper").style.transform = "translate2d("+e.clientX-startX+",0)";
-				this.transform();
-			}
-		}
-	},
-	MouseWheelHandler:function(e){
-		if(_bTrform.scroll_guardian==false){
-			document.getElementById("body").setAttribute('style','overflow: hidden; height:100%; cursor: -webkit-grab; cursor: -moz-grab;');
-			var evt=window.event || e //equalize event object
-	    	var delta=evt.detail? evt.detail*(-120) : evt.wheelDelta;
-	    	if(delta>0){
-	    		_bTrform.data.scale+=0.05;
-	    	}else{
-	    		_bTrform.data.scale-=0.05;
-	    	}
-	    	_bTrform.transform();
-	    }else{
-	    	var evt=window.event || e //equalize event object
-	    	var delta=evt.detail? evt.detail*(-120) : evt.wheelDelta;
-	    	if(delta>0){
-	    		_bTrform.data.y+=30;
-	    	}else{
-	    		_bTrform.data.y-=30;
-	    	}
-	    	_bTrform.transform();
-	    	//document.getElementById("body").setAttribute('style','overflow: hidden; height:auto');
-	    }
-	},
-	scroll_off:function(){
-		this.scroll_guardian=false;
-		document.getElementById("body").setAttribute('style','overflow: hidden; height:100%; cursor: -webkit-grab; cursor: -moz-grab;');
-	},
-	off:function(){
-		this.on_guardian = false;
-		//document.getElementById("body").setAttribute('style','overflow: hidden; height:auto');
-	},
-	on:function(){
-		this.on_guardian = true;
-	},
-	transform:function(){
-		var out = "";
-		out += "transform: translate("+this.data.x+"px,"+this.data.y+"px) scale("+this.data.scale+");";
-		out += "-webkit-transform: translate("+this.data.x+"px,"+this.data.y+"px) scale("+this.data.scale+");";
-		
-		document.getElementById("page-builder-wraper").setAttribute('style',out);
-		
-		var out = "";
-		//out += "background-position: "+this.data.x+"px "+this.data.y+"px;";
-		out += "overflow: hidden; height:100%; cursor: -webkit-grab; cursor: -moz-grab;";
-		document.getElementById("body").setAttribute('style',out);
-
-	}
-}
-
-
-			
-
-
-
-
