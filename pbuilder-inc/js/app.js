@@ -3,7 +3,7 @@ var assets_path = "pbuilder-assets/";
 var upload_path = "pbuilder-upload/";
 
 /*clear localsorage*/
-localStorage.clear();
+//localStorage.clear();
 
 var new_object = [{
 		"title": "Propably best new article on the internet!",
