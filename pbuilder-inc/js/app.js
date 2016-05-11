@@ -251,7 +251,7 @@ var _PBuilder = {
 		}
 	},	
 	edit:function(el){
-		//document.getElementById('body').classList.toggle('blur');
+		//document.getElementById('page-builder-wraper').classList.toggle('blur');
 		window.location.hash = '#openModal';
 		this.e_obj.section = getClosest(el, 'section');
 		this.e_obj.section_index = this.J_kIx(this.e_obj.section.id);
