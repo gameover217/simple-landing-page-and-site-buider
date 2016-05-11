@@ -138,14 +138,11 @@ var _PBuilder = {
 			_PBuilder.moved_element(el,'to');
 			save_local_grid();
 		});	
-
 	},
 	/* Load new boilerplate */
 	load_html : function(packagename){
 				
 		loadFile( function(html_response) {
-
-
 
 			document.getElementById("page-builder").innerHTML = html_response;
 			var tag = document.createElement("script");
@@ -257,7 +254,7 @@ var _PBuilder = {
 		this.e_obj.section_index = this.J_kIx(this.e_obj.section.id);
 		this.e_obj.element = getClosest(el, '.gr-body');
 		this.e_obj.element_index = this.DOM_Ix( this.e_obj.element );
-		this.e_obj.constrols = this.e_obj.element.querySelectorAll('.toedit');
+		this.e_obj.constrols = this.e_obj.element.querySelectorAll('[data-key]');
 		this.e_obj.data_fragment = this.data[this.e_obj.section_index].elements[this.e_obj.element_index];
 		
 
@@ -281,20 +278,22 @@ var _PBuilder = {
 		this.e_obj = e_obj;
 		var out = '<div id="editor-wraper" onkeypress="_PBuilder.editor_keypress(event)">';
 		for( var i = 0; i<this.e_obj.constrols.length; i++){
-			if(this.e_obj.constrols[i].classList.contains('text')){
+			console.log('ctrl');
+			console.log(this.e_obj.constrols[i]);
+			if(this.e_obj.constrols[i].getAttribute("data-key") == 'title'){
 				out += '<input data-edit-controll="true" name="'+this.e_obj.constrols[i].getAttribute("data-key")+'" value="'+this.e_obj.constrols[i].innerHTML+'" ><br>';
 			}
-			if(this.e_obj.constrols[i].classList.contains('textarea')){
+			if(this.e_obj.constrols[i].getAttribute("data-key") == 'description'){
 				out += '<textarea data-edit-controll="true" name="'+this.e_obj.constrols[i].getAttribute("data-key")+'">'+this.e_obj.constrols[i].innerHTML+'</textarea><br>';
 			}
-			if(this.e_obj.constrols[i].classList.contains('background')){
+			if(this.e_obj.constrols[i].getAttribute("data-key") == 'background'){
 				
 				out += '<div id="dropzone" data-edit-controll="true" name="'+this.e_obj.constrols[i].getAttribute("data-key")+'" value="'+this.e_obj.data_fragment[this.e_obj.constrols[i].getAttribute("data-key")]+'">';
 				out += 'add or edit background';
 				out += '<div id="exist-preview" style="background-image:url(\''+this.e_obj.data_fragment.background+'\')"></div>';
 				out += '</div>';
 			}
-			console.log(this.e_obj.data_fragment);
+			
 		}
 		/* parse template */
 		/*var usage_template = this.loaded_components[this.schema[section.id]['default_component']];
