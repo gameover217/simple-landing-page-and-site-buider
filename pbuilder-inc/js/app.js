@@ -1,10 +1,14 @@
-//var path = send_obj.path;
+/* pbuilder assets path */
+var assets_path = "pbuilder-assets/";
+var upload_path = "pbuilder-upload/";
 
-var path = "pbuilder-assets/";
+/*clear localsorage*/
+//localStorage.clear();
+
 var new_object = [{
 		"title": "Propably best new article on the internet!",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-        "image": "inc/img/unsplash.example2.jpeg",
+        "image": upload_path+"unsplash.example2.jpeg",
         "linkname": "Learn more",
         "linktarget": "html://google.com"
    	}];
@@ -61,7 +65,7 @@ var _PBuilder = {
 			loadFile( function(response) {
 				localStorage.actual_landing_data = response;
 				_this.init_Callback(JSON.parse(response));
-			}, path+'data-base/composition1.json');
+			}, assets_path+'data-base/composition1.json');
 		} 		
 	},
 	/* 2 INIT callback - update app object */
@@ -91,7 +95,7 @@ var _PBuilder = {
 				_this.loaded_components[comp_name] = response;
 				_this.load_counter++;
 				_this.load_components();
-			}, path + 'components/' + comp_name + '.doT.html'); 
+			}, assets_path + 'components/' + comp_name + '.doT.html'); 
 		}
 	},
 	/* 3 Load components callback - RUN APP */
@@ -145,10 +149,10 @@ var _PBuilder = {
 
 			document.getElementById("page-builder").innerHTML = html_response;
 			var tag = document.createElement("script");
-			tag.src = path + 'boiler-plates/' + packagename + '/site-script.js';
+			tag.src = assets_path + 'boiler-plates/' + packagename + '/site-script.js';
 			document.getElementsByTagName("head")[0].appendChild(tag);
 
-		}, path + 'boiler-plates/' + packagename + '/site.html'); 
+		}, assets_path + 'boiler-plates/' + packagename + '/site.html'); 
 	},	
 	render: function(data, tpl_part, target){
 
@@ -260,7 +264,7 @@ var _PBuilder = {
 		this.build_elem_form(this.e_obj);
 		/* TODO & WARNING - always run uploader if run edit window */
 		var myDropzone = new Dropzone("div#dropzone", { 
-			url: "upload.php",
+			url: "pbuilder-upload.php",
 			thumbnailWidth: "400"
 		});
 
@@ -414,10 +418,27 @@ function gui_designers(){
 	}else{
 		_bTrform.destroy();
 	}
-	//window.location.href="#";
-
+	window.location.href="#";
 }
 
+
+function gui_save(){
+	var data = window.btoa(JSON.stringify(_PBuilder.data));
+	var schema = window.btoa(JSON.stringify(_PBuilder.schema));
+	window.location.href="#openModal";
+	out = "Generating static WebPage now...<br>Please wait...";
+	document.getElementById('modal-content').innerHTML = out;
+	
+	loadFile( function(response) {		
+			out = "<b>Your site was created on:</b><br/>";
+			out += "http://micromarket.io/pbuilder-upload/"+window.transaction_id;
+			out += "<p>Copy this link and enjoy!!</p>";
+			document.getElementById('modal-content').innerHTML = out;
+			//document.getElementById('body').innerHTML = response;
+			//localStorage.actual_landing_data = response;
+			//_this.init_Callback(JSON.parse(response));
+	}, 'render-static.php?data='+data+'&schema='+schema+'&tid='+window.transaction_id);
+}
 
 
 function dragstart_body_handler(e){
