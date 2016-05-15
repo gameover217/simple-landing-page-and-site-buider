@@ -1,0 +1,33 @@
+.main{
+	width:100%;
+}	
+/* display desktop */
+#s1-wraper,
+#s2-wraper,
+#s3-wraper,
+#s4-wraper,
+#s5-wraper{
+	float:left;
+	clear:left;
+	width:30%;
+}	
+#s6-wraper{
+	position:relative;
+	width:70%;
+	margin-left:30%;
+}
+#s7-wraper{
+	display:none;
+}
+#s7-after{
+	clear:both;
+}
+.bx{
+	position:relative;
+}
+
+/* global for blocks */
+
+#s3 .bx{
+	float:left;
+}

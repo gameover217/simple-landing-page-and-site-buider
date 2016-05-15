@@ -56,7 +56,7 @@
 	<div id="templates">
 		<i class="material-icons">&#xE8F1;</i>
 		<ul>
-			<li onclick="_PBuilder.load_html('agnmg1')">1</li>
+			<li onclick="_PBuilder.load_html('relu-person')">1</li>
 			<li onclick="_PBuilder.load_html('photo-blog')">2</li>
 			<li onclick="_PBuilder.load_html('pictorama')">3</li>
 		</ul>

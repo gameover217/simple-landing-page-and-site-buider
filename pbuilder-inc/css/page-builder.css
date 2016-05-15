@@ -1,6 +1,4 @@
-
 body{
-
 	margin:0; 
 	padding:0;
 	background-image:  url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAAAAACMIRMSAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QA/4ePzL8AAAAbSURBVCjPYziHEzCcK8AFgFK44KiuUV100wUAdddvaiDaKL0AAAAASUVORK5CYII=');
@@ -214,21 +212,25 @@ section:hover{
 .gu-mirror{
 	transform:scale(0.6);
 }
-.gr-body:hover{
+.tech-wrapper{
+	position:relative;
+	outline:black solid 2px;
+}
+.tech-wrapper:hover{
 	cursor: move;
 	cursor: all-scroll;
 }
-.gr-body .edit, .gr-body .remove{
+.tech-wrapper .edit, .tech-wrapper .remove{
 	margin:0.1em;
 	padding:0.1em;
 	position:absolute;
 	background-color: #333;
 	line-height: 0.7em
 }
-.gr-body .remove{			
+.tech-wrapper .remove{			
 	margin-left:30px;
 }
-.gr-body .remove a, .gr-body .edit a{
+.tech-wrapper .remove a, .tech-wrapper .edit a{
 	color:#fff;
 }
 /* MODAL */

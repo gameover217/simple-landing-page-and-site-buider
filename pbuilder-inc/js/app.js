@@ -1,7 +1,11 @@
+/* TODO */
+/* 1. clear #s~ node from inner elements !!!! */
+/* 2. find and kill this.e_obj.section = getClosest(el, '.bx-wrapper'); */
+
 /* pbuilder assets path */
 var assets_path = "pbuilder-assets/";
 var upload_path = "pbuilder-upload/";
-
+alert('co sie woła');
 /*clear localsorage*/
 //localStorage.clear();
 
@@ -41,6 +45,7 @@ var _PBuilder = {
 	'dragobj':{},
 	'data':{},
 	'schema':{},
+	'properties':{},
 	'loaded_components':{},
 	'load_counter':0,
 	'move_element':{
@@ -54,10 +59,11 @@ var _PBuilder = {
 		}
 	},
 	/* 1 INIT - load content data */
-	init: function(schema){
-		
-
-		_this = this; _this.schema = schema; this.load_counter = 0;
+	init: function(input_data){
+		_this = this; 
+		_this.schema = input_data.schema; 
+		_this.properties = input_data.properties; 
+		_this.load_counter = 0;
 		/* Render App from file*/
 		if(localStorage.actual_landing_data){
 			this.init_Callback(JSON.parse(localStorage.actual_landing_data));
@@ -71,7 +77,6 @@ var _PBuilder = {
 	/* 2 INIT callback - update app object */
 	init_Callback : function(data){
 		/* build data model */
-		console.log('-- run render constructor --');
 		this.data = data;
 		this.data = _clear_at_start(data);
 		this.load_components();
@@ -80,27 +85,29 @@ var _PBuilder = {
 	load_components: function(){
 		/* TODO & WARNING - dont load loaded (existing) components */
 		console.log('## LOAD COMPONENTS ##');
-		console.log(this.schema);
 		_this = this;
-		var section_name = Object.keys(this.schema)[this.load_counter];
-		console.log('section_name:'+section_name);
-		if(section_name == undefined){
-			console.log('components loaded');
-			this.load_components_callback();
-		}else{
-			var comp_name = this.schema[ section_name ]['default_component'];
-			console.log('load compoent:'+comp_name);
-			loadFile( function(response) {
-				var schema_el_length = Object.keys(_this.schema).length;
-				_this.loaded_components[comp_name] = response;
-				_this.load_counter++;
-				_this.load_components();
-			}, assets_path + 'components/' + comp_name + '.doT.html'); 
+		if(this.schema){
+			var section_name = Object.keys(this.schema)[this.load_counter];
+			if(section_name == undefined){
+				console.log('components loaded');
+				this.load_components_callback();
+				return false;
+			}else{
+				console.log('section_name:'+section_name);
+				var comp_name = this.schema[ section_name ]['default_component'];
+				console.log('load compoent:'+comp_name);
+				loadFile( function(response) {
+					var schema_el_length = Object.keys(_this.schema).length;
+					_this.loaded_components[comp_name] = response;
+					_this.load_counter++;
+					_this.load_components();
+				}, assets_path + 'components/' + _this.properties.components_path + comp_name + '.doT.html'); 
+			}
 		}
 	},
 	/* 3 Load components callback - RUN APP */
 	load_components_callback: function(){
-			
+		save_local_grid();
 		/* render defaults components */
 		var to_drag_and_drop = [];
 		for (section in this.schema){			
@@ -115,8 +122,10 @@ var _PBuilder = {
 			/* get templates and render it */
 			var tpl_part = this.loaded_components[this.schema[section]['default_component']];	
 			var content = this.data[ this.J_kIx(section) ];
+			console.log(content);
 			if(content){
 				this.data[ this.J_kIx(section) ].elements.forEach(function (data, i) {
+			   		
 			   		_PBuilder.render(data, tpl_part, section);
 				});
 			}
@@ -124,6 +133,7 @@ var _PBuilder = {
 				to_drag_and_drop.push(document.getElementById(section));
 			}
 		}	
+		console.log(to_drag_and_drop);
 		/* ------------- */
 		/* DRAG AND DROP */	
 		var min = 0;
@@ -141,9 +151,7 @@ var _PBuilder = {
 	},
 	/* Load new boilerplate */
 	load_html : function(packagename){
-				
 		loadFile( function(html_response) {
-
 			document.getElementById("page-builder").innerHTML = html_response;
 			var tag = document.createElement("script");
 			tag.src = assets_path + 'boiler-plates/' + packagename + '/site-script.js';
@@ -154,7 +162,7 @@ var _PBuilder = {
 	render: function(data, tpl_part, target){
 
 		var out = '';
-		out += '<div class="gr-body">';
+		out += '<div class="tech-wrapper">';
 		/* check is this section have delete */		
 		if(this.schema[target].remove){
 			out += '<div class="remove" onclick="_PBuilder.remove(this,\''+this.schema[target].remove+'\')"><a href="#none"><i class="material-icons">&#xE92B;</i></a></div>';
@@ -166,6 +174,7 @@ var _PBuilder = {
 		out += '</div>';
 		out = out.replace(/\\"/g, '"');
 		/* create data */
+
 		var tempHTML = doT.template(out);
 		var tempCONTENT = data;
 		
@@ -217,7 +226,7 @@ var _PBuilder = {
 	/* ------------------------ */
 
 	remove: function(el,target){
-		var wraper = getClosest(el, '.gr-body');
+		var wraper = getClosest(el, 'section');
 		this.J_delete(wraper.parentNode.id, this.DOM_Ix( wraper ));
 		wraper.parentNode.removeChild(wraper);
 		/*save_local_grid();*/
@@ -248,16 +257,20 @@ var _PBuilder = {
 		}
 	},	
 	edit:function(el){
+		console.log(this.data);
 		//document.getElementById('page-builder-wraper').classList.toggle('blur');
 		window.location.hash = '#openModal';
+		
+		/* todo HARDCODED FIND xestion calsss !!!!!! */
 		this.e_obj.section = getClosest(el, 'section');
+		
 		this.e_obj.section_index = this.J_kIx(this.e_obj.section.id);
-		this.e_obj.element = getClosest(el, '.gr-body');
+		this.e_obj.element = getClosest(el, '.tech-wrapper');
 		this.e_obj.element_index = this.DOM_Ix( this.e_obj.element );
-		this.e_obj.constrols = this.e_obj.element.querySelectorAll('[data-key]');
+		this.e_obj.constrols = this.e_obj.element.querySelectorAll('[data-bx]');
 		this.e_obj.data_fragment = this.data[this.e_obj.section_index].elements[this.e_obj.element_index];
 		
-
+		console.log(this.e_obj);
 		/* render form */
 		this.build_elem_form(this.e_obj);
 		/* TODO & WARNING - always run uploader if run edit window */
@@ -278,17 +291,15 @@ var _PBuilder = {
 		this.e_obj = e_obj;
 		var out = '<div id="editor-wraper" onkeypress="_PBuilder.editor_keypress(event)">';
 		for( var i = 0; i<this.e_obj.constrols.length; i++){
-			console.log('ctrl');
-			console.log(this.e_obj.constrols[i]);
-			if(this.e_obj.constrols[i].getAttribute("data-key") == 'title'){
-				out += '<input data-edit-controll="true" name="'+this.e_obj.constrols[i].getAttribute("data-key")+'" value="'+this.e_obj.constrols[i].innerHTML+'" ><br>';
+
+			if(this.e_obj.constrols[i].getAttribute("data-bx") == 'title'){
+				out += '<input data-edit-controll="true" name="'+this.e_obj.constrols[i].getAttribute("data-bx")+'" value="'+this.e_obj.constrols[i].innerHTML+'" ><br>';
 			}
-			if(this.e_obj.constrols[i].getAttribute("data-key") == 'description'){
-				out += '<textarea data-edit-controll="true" name="'+this.e_obj.constrols[i].getAttribute("data-key")+'">'+this.e_obj.constrols[i].innerHTML+'</textarea><br>';
+			if(this.e_obj.constrols[i].getAttribute("data-bx") == 'description'){
+				out += '<textarea data-edit-controll="true" name="'+this.e_obj.constrols[i].getAttribute("data-bx")+'">'+this.e_obj.constrols[i].innerHTML+'</textarea><br>';
 			}
-			if(this.e_obj.constrols[i].getAttribute("data-key") == 'background'){
-				
-				out += '<div id="dropzone" data-edit-controll="true" name="'+this.e_obj.constrols[i].getAttribute("data-key")+'" value="'+this.e_obj.data_fragment[this.e_obj.constrols[i].getAttribute("data-key")]+'">';
+			if(this.e_obj.constrols[i].getAttribute("data-bx") == 'background'){
+				out += '<div id="dropzone" data-edit-controll="true" name="'+this.e_obj.constrols[i].getAttribute("data-bx")+'" value="'+this.e_obj.data_fragment[this.e_obj.constrols[i].getAttribute("data-bx")]+'">';
 				out += 'add or edit background';
 				out += '<div id="exist-preview" style="background-image:url(\''+this.e_obj.data_fragment.background+'\')"></div>';
 				out += '</div>';
@@ -313,8 +324,6 @@ var _PBuilder = {
 	},
 	editor_save:function(){
 		var edited_controlls = document.querySelectorAll('[data-edit-controll]');
-		console.log("edited_controlls");	
-		console.log(edited_controlls);
 		for( var i = 0; i<edited_controlls.length; i++){
 			
 			if( edited_controlls[i].getAttribute("name")=='background'){
@@ -331,13 +340,13 @@ var _PBuilder = {
 			/* update JSON */
 			this.data[this.e_obj.section_index].elements[this.e_obj.element_index][_name] = _value;
 			/* update DOM */
-			if(document.querySelector("[data-key="+_name+"]") != null){
+			if(document.querySelector("[data-bx="+_name+"]") != null){
 				
 				if(_name == 'background'){
 					var out = "background-image:url('"+_value+"');";
-					this.e_obj.element.querySelector("[data-key="+_name+"]").setAttribute('style',out);
+					this.e_obj.element.querySelector("[data-bx="+_name+"]").setAttribute('style',out);
 				}else{
-					this.e_obj.element.querySelector("[data-key="+_name+"]").innerHTML = _value;
+					this.e_obj.element.querySelector("[data-bx="+_name+"]").innerHTML = _value;
 				}
 				
 			}
@@ -384,10 +393,8 @@ var _PBuilder = {
 
 var save_local_grid = function(){
 	
-	console.log('-- storage data on local browser object --');
 	localStorage.actual_landing_data =  JSON.stringify(_PBuilder.data);
 
-	console.log('-- console log --');
 	var str = JSON.stringify(_PBuilder.data, null, 2);
 	document.getElementById('inspector-content').innerHTML = "##:DATA\n";
 	document.getElementById('inspector-content').innerHTML += str;
