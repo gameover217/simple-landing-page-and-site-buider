@@ -210,28 +210,44 @@ section:hover{
 
 /* ELEMENTS */
 .gu-mirror{
-	transform:scale(0.6);
+	/*transform:scale(0.6);*/
+	
+	color:#000;
+	font-size:0.01em;
+	outline:none !important;
+	background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAKUlEQVQImV3IsQ0AIAwDsFzpe/JU74MNoQ5eHPQ3Myc70Ox4+QeaHegFW1Atvxb1tq8AAAAASUVORK5CYII=');
 }
+.gu-mirror .edit, .gu-mirror .remove{
+	display:none;
+}
+
+
 .tech-wrapper{
-	position:relative;
-	outline:black solid 2px;
+	position:relative;	
 }
 .tech-wrapper:hover{
+	outline: #333 solid 2px;
 	cursor: move;
 	cursor: all-scroll;
 }
 .tech-wrapper .edit, .tech-wrapper .remove{
-	margin:0.1em;
+	margin:0em;
 	padding:0.1em;
 	position:absolute;
 	background-color: #333;
-	line-height: 0.7em
+	line-height: 0.7em;
+	z-index:40;
+	opacity:0;
+	margin-top:-0.5em;
 }
 .tech-wrapper .remove{			
 	margin-left:30px;
 }
 .tech-wrapper .remove a, .tech-wrapper .edit a{
 	color:#fff;
+}
+.tech-wrapper:hover > .edit, .tech-wrapper:hover > .remove{
+	opacity:1;
 }
 /* MODAL */
 .modalDialog {
