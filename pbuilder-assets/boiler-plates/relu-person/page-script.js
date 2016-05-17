@@ -1,7 +1,14 @@
 _PBuilder.init({
 	'properties':{
-		'site_title':'Relu person',
-		'components_path':'ArthurWellesleyCSSconcept/'
+		'global_source':'github', /* localhost, github */
+		'page_title':'Relu person',
+		'page_slug':'relu-person',
+		'boilerplate':'relu-person',
+		'components_path':'relu-org/ArthurWellesleyComponents/', /* organisation/repo */
+		'css_source':'relu-org/ArthurWellesleyCSSconcept/', /* organisation/repo */
+		'css_structure':'abrahamlincoln',
+		'css_dimensions':'abrahamlincoln',
+		'css_visual':'abrahamlincoln'
 	},
 	'schema':{
 		's1':{							
@@ -29,7 +36,7 @@ _PBuilder.init({
 			'new':true
 		},
 		's4':{
-			'default_component':'block-img',
+			'default_component':'block-title-h2',
 			'extended_default_component':true,
 			'dragdrop':true,
 			'remove':true,
@@ -37,7 +44,7 @@ _PBuilder.init({
 			'new':true
 		},
 		's5':{
-			'default_component':'block-img-title-content',
+			'default_component':'block-img',
 			'extended_default_component':true,
 			'dragdrop':true,
 			'remove':true,
@@ -53,7 +60,7 @@ _PBuilder.init({
 			'new':true
 		},
 		's7':{
-			'default_component':'block-img',
+			'default_component':'block-title-content',
 			'extended_default_component':true,
 			'dragdrop':true,
 			'remove':true,

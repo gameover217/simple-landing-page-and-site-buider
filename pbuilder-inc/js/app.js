@@ -5,9 +5,9 @@
 /* pbuilder assets path */
 var assets_path = "pbuilder-assets/";
 var upload_path = "pbuilder-upload/";
-alert('co sie woła');
 /*clear localsorage*/
 //localStorage.clear();
+window.page_slug = "strona-xxx";
 
 var new_object = [{
 		"title": "Propably best new article on the internet!",
@@ -17,10 +17,18 @@ var new_object = [{
         "linktarget": "html://google.com"
    	}];
 
-var loadFile = function (callback, file) {
+var loadFile = function (callback, file, post_data) {
     var xobj = new XMLHttpRequest();
     //xobj.overrideMimeType("application/json");
-    xobj.open('GET', file, true); 
+    if(post_data){
+		xobj.open('POST', file,true); 
+		xobj.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+
+    }else{
+    	xobj.open('GET', file, true); 
+    }
+    
+
     xobj.onreadystatechange = function () {
         if (xobj.readyState == 4 && xobj.status == "200") {
             callback(xobj.responseText);
@@ -32,7 +40,7 @@ var loadFile = function (callback, file) {
         	alert('FATAL ERROR\n'+file+' \nDOESNT EXIST')
         }
     };
-    xobj.send(null);  
+    xobj.send('data='+btoa(JSON.stringify(post_data)));  
 }
 /* on first load clear elements with section (if databese have elements to render) */
 var _clear_at_start = function(data){
@@ -45,7 +53,7 @@ var _PBuilder = {
 	'dragobj':{},
 	'data':{},
 	'schema':{},
-	'properties':{},
+	'properties':{},	
 	'loaded_components':{},
 	'load_counter':0,
 	'move_element':{
@@ -64,6 +72,7 @@ var _PBuilder = {
 		_this.schema = input_data.schema; 
 		_this.properties = input_data.properties; 
 		_this.load_counter = 0;
+
 		/* Render App from file*/
 		if(localStorage.actual_landing_data){
 			this.init_Callback(JSON.parse(localStorage.actual_landing_data));
@@ -79,7 +88,56 @@ var _PBuilder = {
 		/* build data model */
 		this.data = data;
 		this.data = _clear_at_start(data);
-		this.load_components();
+
+
+		/* add GLOBAL Style */
+		/* LOAD FROM LOCALHOST */
+		/*if(!document.getElementById("page-structure")){
+			var tag = document.createElement("link");
+			tag.href = assets_path + 'components/' + _PBuilder.properties['css_source'] + 'page-structure-' + _PBuilder.properties['css_structure'] + '.css';
+			tag.rel = 'stylesheet';
+			tag.type = 'text/css';
+			tag.id = 'page-structure';
+			document.getElementsByTagName("head")[0].appendChild(tag);
+		}
+		if(!document.getElementById("page-dimensions")){
+			var tag = document.createElement("link");
+			tag.href = assets_path + 'components/' + _PBuilder.properties['css_source'] + 'page-dimensions-' + _PBuilder.properties['css_dimensions'] + '.css';
+			tag.rel = 'stylesheet';
+			tag.type = 'text/css';
+			tag.id = 'page-dimensions';
+			document.getElementsByTagName("head")[0].appendChild(tag);
+		}
+		if(!document.getElementById("page-visual")){
+			var tag = document.createElement("link");
+			tag.href = assets_path + 'components/' + _PBuilder.properties['css_source'] + 'page-visual-' + _PBuilder.properties['css_visual'] + '.css';
+			tag.rel = 'stylesheet';
+			tag.type = 'text/css';
+			tag.id = 'page-visual';
+			document.getElementsByTagName("head")[0].appendChild(tag);
+		}
+		this.load_components();*/
+
+		/* LOAD FROM GITHUB */
+		_GITHUB.get_content({
+			'repo':_PBuilder.properties['css_source'],
+			'branch':'master',
+			'filter':'abrahamlincoln',
+			},
+			/* callback */
+			function() {
+				console.log('--LOADED DATA--');
+				var d = _GITHUB.data[_PBuilder.properties['css_source']];
+				var out = '<style>';
+				for(var index in d) { 
+					out += atob(d[index]);
+				}
+				out +='</style>';
+				document.getElementsByTagName("head")[0].innerHTML += out;
+				_PBuilder.load_components();
+		});
+
+		
 	},	
 	/* 3 Load components (templates) to render */
 	load_components: function(){
@@ -113,7 +171,7 @@ var _PBuilder = {
 		for (section in this.schema){			
 			/* set editable section */
 			if(this.schema[section].new){
-				out = '<div onclick="_PBuilder.add_new(this)" style="position:absolute; margin-left:-1.1em; font-size:2em; text-shadow:0 0 1px #fff" data-add="'+section+'">';
+				out = '<div onclick="_PBuilder.add_new(this)" class="add-new-element" data-add="'+section+'">';
 				out += '<i class="material-icons">&#xE146;</i></div>';
 				document.getElementById(section).outerHTML += out;
 				//document.getElementById(section).className += " section_add";
@@ -149,26 +207,33 @@ var _PBuilder = {
 			save_local_grid();
 		});	
 	},
+
+
 	/* Load new boilerplate */
 	load_html : function(packagename){
 		loadFile( function(html_response) {
 			document.getElementById("page-builder").innerHTML = html_response;
+			document.getElementById("page-builder-wraper").style.display = 'block';
+			/* add SCRIPT */
 			var tag = document.createElement("script");
-			tag.src = assets_path + 'boiler-plates/' + packagename + '/site-script.js';
+			tag.src = assets_path + 'boiler-plates/' + packagename + '/page-script.js';
 			document.getElementsByTagName("head")[0].appendChild(tag);
-
-		}, assets_path + 'boiler-plates/' + packagename + '/site.html'); 
+			
+		}, assets_path + 'boiler-plates/' + packagename + '/page.html'); 
 	},	
 	render: function(data, tpl_part, target){
 
 		var out = '';
 		out += '<div class="tech-wrapper">';
-		/* check is this section have delete */		
+		/* check is this section have delete */	
+
+		/*out += '<div class="drag"> <a href="#none"><i class="material-icons">&#xE25D;</i></a></div>';*/
+		
 		if(this.schema[target].remove){
-			out += '<div class="remove" onclick="_PBuilder.remove(this,\''+this.schema[target].remove+'\')"><a href="#none"><i class="material-icons">&#xE92B;</i></a></div>';
+			out += '<div class="remove" onmousedown="event.stopPropagation()" onclick="_PBuilder.remove(this,\''+this.schema[target].remove+'\')"><a href="#none"><i class="material-icons">&#xE92B;</i></a></div>';
 		}
 		if(this.schema[target].edit_this){
-			out += '<div class="edit" onclick="_PBuilder.edit(this); return false"><a href="#openModal"><i class="material-icons">&#xE254;</i></a></div>';
+			out += '<div class="edit" onmousedown="event.stopPropagation()" onclick="_PBuilder.edit(this); return false"><a href="#openModal"><i class="material-icons">&#xE254;</i></a></div>';
 		}
 		out += tpl_part;
 		out += '</div>';
@@ -454,17 +519,30 @@ function gui_designers(){
 function gui_save(){
 	var data = window.btoa(JSON.stringify(_PBuilder.data));
 	var schema = window.btoa(JSON.stringify(_PBuilder.schema));
+	var properties = window.btoa(JSON.stringify(_PBuilder.properties));
 	window.location.href="#openModal";
 	out = "Generating static WebPage now...<br>Please wait...";
 	document.getElementById('modal-content').innerHTML = out;
 	
 	loadFile( function(response) {		
 			out = "<b>Your site was created on:</b><br/>";
-			out += "http://micromarket.io/pbuilder-upload/"+window.transaction_id;
+			out += "pbuilder-upload/"+window.page_slug;
 			out += "<p>Copy this link and enjoy!!</p>";
+
+			out = response;
 			document.getElementById('modal-content').innerHTML = out;
 			//document.getElementById('body').innerHTML = response;
 			//localStorage.actual_landing_data = response;
 			//_this.init_Callback(JSON.parse(response));
-	}, 'render-static.php?data='+data+'&schema='+schema+'&tid='+window.transaction_id);
+	},
+	 'render-static.php', 
+	{
+		"data":data,
+		"properties":properties,
+		"schema":schema,
+		"page_slug":window.page_slug
+	});
 }
+
+
+

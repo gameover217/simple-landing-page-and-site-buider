@@ -7,10 +7,10 @@ body{
 #main-header{
 	position:fixed;
 	top:0;
-	width:100%;
+	width:99%;
 	background-color:#333; margin:0;
 	font-family: sans;
-	padding:2em;
+	padding:0.5%;
 	color:#aaa;
 	font-size:0.4em;
 	z-index:100;
@@ -37,18 +37,20 @@ body{
 	-ms-user-select: none;
 	user-select: none;
 	position:fixed;
-	height:70%;
-	width:1.5em;
-	bottom:0;
-	background-color: #fff;
-	padding:0.2em;
-	color:#333;
+	height:100%;
+	width:10%;
+	top:3em;
+	background-color: #333;
+	padding:0.6em 0.2em;
+
+	color:#ddd;
 	cursor:pointer;
-	text-align:right;
+	text-align:left;
 	z-index:100;
+	font-family: sans;
 }
 #templates:hover{
-	width:1.7em;
+	width:10.5%;
 }
 #templates ul{
 	margin:0;
@@ -102,6 +104,8 @@ body{
 	user-select: none;
 	border:1px dashed #333;
 	transform-origin: 50% 3em;
+	margin-left:5%;
+	display:none;
 /*	-webkit-transition: -webkit-transform 0.5s ease;
 	-moz-transition: -moz-transform 0.5s ease;
 	transition: transform 0.5s ease;*/
@@ -113,6 +117,7 @@ body{
 	box-shadow:0px 0px 10px #000;	
 	background-color: #fff;
 	transition:height 1s;
+	
 }
 
 #gui_zoom_button.active{
@@ -157,6 +162,7 @@ and (max-device-width : 640px){
 	margin:2em auto;
 	width:80%;
 	border:15px solid #333;
+	display:none;
 }
 #inspector-content{
 	color:#ddd;
@@ -193,6 +199,22 @@ section:hover{
 .main-ico:hover{
 	color:#fff;
 }
+.material-icons{
+	vertical-align: -0.35em;
+
+}
+.menu-tab{
+	font-size:12px;
+	letter-spacing: 0.15em;
+	text-transform: uppercase;
+	padding-top:0.1em;
+	border-bottom:1px solid #444;
+	margin-left:0.5%;
+}
+.menu-tab:hover{
+	background-color:#71B6D8;
+	color:#000;
+}
 /* save button */
 #save-content{
 	line-height: 3em;
@@ -204,11 +226,22 @@ section:hover{
 }
 
 
-
+.s-wrapper{
+	position:relative;
+}
 
 
 
 /* ELEMENTS */
+.add-new-element{
+	position:absolute; 
+	margin-left:-1.1em; 
+	font-size:2em; 
+	text-shadow:0 0 1px #fff;
+	top:0;
+	right:0;
+}
+
 .gu-mirror{
 	/*transform:scale(0.6);*/
 	
@@ -230,7 +263,7 @@ section:hover{
 	cursor: move;
 	cursor: all-scroll;
 }
-.tech-wrapper .edit, .tech-wrapper .remove{
+.tech-wrapper .edit, .tech-wrapper .remove, .tech-wrapper .drag{
 	margin:0em;
 	padding:0.1em;
 	position:absolute;
@@ -243,10 +276,13 @@ section:hover{
 .tech-wrapper .remove{			
 	margin-left:30px;
 }
-.tech-wrapper .remove a, .tech-wrapper .edit a{
+.tech-wrapper .drag{			
+	margin-left:60px;
+}
+.tech-wrapper .remove a, .tech-wrapper .edit a, .tech-wrapper .drag a{
 	color:#fff;
 }
-.tech-wrapper:hover > .edit, .tech-wrapper:hover > .remove{
+.tech-wrapper:hover > .edit, .tech-wrapper:hover > .remove, .tech-wrapper:hover > .drag{
 	opacity:1;
 }
 /* MODAL */
@@ -255,9 +291,9 @@ section:hover{
 	top: 0;
 	right: 0;
 	bottom: 0;
-	left: 0;
+	left: 10%;
 	background: rgba(255, 255, 255, 0.9);
-	z-index: 99999;
+	z-index: 10;
 	opacity:0;
 	pointer-events: none;
 	font-family: sans;
@@ -273,9 +309,9 @@ section:hover{
     pointer-events: auto;
 }
 .modalDialog > div {
-    width: 60%;
+    width: 90%;
     position: relative;
-    margin: 4% auto;
+    margin: 5% auto;
     padding: 20px 40px 25px 40px; 
     box-shadow: 0px 0px 5px #C0C0C0;  
 	   

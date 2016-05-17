@@ -1,0 +1,47 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto&subset=latin-ext);
+@import url(https://fonts.googleapis.com/css?family=Oswald&subset=latin-ext);
+
+
+main{
+	background-color: #333;
+}
+#s6{
+	background-color: #fff;
+}
+/* global for blocks */
+figure{
+  background-size: cover;
+}
+
+
+#s1 h2, 
+#s2 h2, 
+#s3 h2, 
+#s4 h2, 
+#s5 h2 {
+  color: #fff;
+  font-family: 'Oswald', sans-serif;
+}
+
+#s1 p, 
+#s2 p, 
+#s3 p, 
+#s4 p, 
+#s5 p {
+  color: #fff;
+  font-family: 'Roboto', sans-serif;
+}
+
+#s1, 
+#s2, 
+#s3, 
+#s4, 
+#s5,
+#s6,
+#s7 {
+  padding: 10px;
+}
+
+#s6 h2 {
+  font-family: 'Oswald', sans-serif;
+}
