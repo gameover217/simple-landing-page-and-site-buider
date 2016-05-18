@@ -26,6 +26,7 @@ var _GITHUB = {
 	},
 
 	load: function(){
+		console.log(_t.res);
 		_t = this;
 		if(	_t.check_filter(_t.count) ){
 			loadFile( function(_r) {

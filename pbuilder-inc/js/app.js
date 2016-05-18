@@ -132,7 +132,8 @@ var _PBuilder = {
 				}
 				out +='</style>';
 				document.getElementsByTagName("head")[0].innerHTML += out;
-				_PBuilder.load_components_localhost();
+				//_PBuilder.load_components_localhost();
+				_PBuilder.load_components_github();
 		});
 	},	
 	/* 3 Load components (templates) to render */
@@ -144,6 +145,7 @@ var _PBuilder = {
 			var section_name = Object.keys(this.schema)[this.load_counter];
 			if(section_name == undefined){
 				console.log('components loaded');
+				console.log(this.loaded_components);
 				this.load_components_callback();
 				return false;
 			}else{
@@ -161,6 +163,28 @@ var _PBuilder = {
 	},
 	load_components_github(){
 		console.log('## LOAD COMPONENTS GITHUB ##');
+		_this = this;
+		var filter = [];
+		if(this.schema){
+			for(var _i in this.schema) { 			
+				filter.push(this.schema[_i].default_component);
+			}
+		}
+		_GITHUB.get_content({
+			'repo':'relu-org/ArthurWellesleyComponents/',
+			'branch':'master',
+			'filter':filter,
+			},
+			/* callback */
+			function() {
+				var _in = _GITHUB.data['relu-org/ArthurWellesleyComponents/'];
+				for(var _i in _in) { 
+					console.log(_i.split(".")[0]); 
+					_this.loaded_components[_i.split(".")[0]] = atob(_in[_i]);
+				}
+				console.log(_this.loaded_components);
+				_this.load_components_callback();
+		});
 	},
 	/* 3 Load components callback - RUN APP */
 	load_components_callback: function(){

@@ -407,7 +407,7 @@ section:hover{
 }
 #preloader-bar{
 	height:1.5em;
-	transition: opacity .5s, width .5s;
+	transition: opacity 1s, width .5s;
 	background-color: #0077B1;
 	width:0%;
 	font-size: 0.7em;
