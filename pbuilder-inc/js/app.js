@@ -88,8 +88,6 @@ var _PBuilder = {
 		/* build data model */
 		this.data = data;
 		this.data = _clear_at_start(data);
-
-
 		/* add GLOBAL Style */
 		/* LOAD FROM LOCALHOST */
 		/*if(!document.getElementById("page-structure")){
@@ -122,7 +120,7 @@ var _PBuilder = {
 		_GITHUB.get_content({
 			'repo':_PBuilder.properties['css_source'],
 			'branch':'master',
-			'filter':'abrahamlincoln',
+			'filter':['abrahamlincoln'],
 			},
 			/* callback */
 			function() {
@@ -134,13 +132,11 @@ var _PBuilder = {
 				}
 				out +='</style>';
 				document.getElementsByTagName("head")[0].innerHTML += out;
-				_PBuilder.load_components();
+				_PBuilder.load_components_localhost();
 		});
-
-		
 	},	
 	/* 3 Load components (templates) to render */
-	load_components: function(){
+	load_components_localhost: function(){
 		/* TODO & WARNING - dont load loaded (existing) components */
 		console.log('## LOAD COMPONENTS ##');
 		_this = this;
@@ -158,10 +154,13 @@ var _PBuilder = {
 					var schema_el_length = Object.keys(_this.schema).length;
 					_this.loaded_components[comp_name] = response;
 					_this.load_counter++;
-					_this.load_components();
+					_this.load_components_localhost();
 				}, assets_path + 'components/' + _this.properties.components_path + comp_name + '.doT.html'); 
 			}
 		}
+	},
+	load_components_github(){
+		console.log('## LOAD COMPONENTS GITHUB ##');
 	},
 	/* 3 Load components callback - RUN APP */
 	load_components_callback: function(){
@@ -174,8 +173,6 @@ var _PBuilder = {
 				out = '<div onclick="_PBuilder.add_new(this)" class="add-new-element" data-add="'+section+'">';
 				out += '<i class="material-icons">&#xE146;</i></div>';
 				document.getElementById(section).outerHTML += out;
-				//document.getElementById(section).className += " section_add";
-				//document.getElementById(section).onclick = this.add_new;				
 			}
 			/* get templates and render it */
 			var tpl_part = this.loaded_components[this.schema[section]['default_component']];	
@@ -183,7 +180,6 @@ var _PBuilder = {
 			console.log(content);
 			if(content){
 				this.data[ this.J_kIx(section) ].elements.forEach(function (data, i) {
-			   		
 			   		_PBuilder.render(data, tpl_part, section);
 				});
 			}
@@ -218,7 +214,6 @@ var _PBuilder = {
 			var tag = document.createElement("script");
 			tag.src = assets_path + 'boiler-plates/' + packagename + '/page-script.js';
 			document.getElementsByTagName("head")[0].appendChild(tag);
-			
 		}, assets_path + 'boiler-plates/' + packagename + '/page.html'); 
 	},	
 	render: function(data, tpl_part, target){

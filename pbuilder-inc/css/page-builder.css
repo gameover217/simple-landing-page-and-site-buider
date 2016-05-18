@@ -397,4 +397,25 @@ section:hover{
 }
 
 
+#preloader{
+	position:fixed; 
+	width:90%; 
+	bottom:0; 
+	left:10%;
+	z-index: 90;
+	overflow: hidden;
+}
+#preloader-bar{
+	height:1.5em;
+	transition: opacity .5s, width .5s;
+	background-color: #0077B1;
+	width:0%;
+	font-size: 0.7em;
+	line-height: 1.5em;
+	text-align: left;	
+	color:#fff;
+	overflow: hidden;	
+	font-family: sans-serif;
+}
+
 

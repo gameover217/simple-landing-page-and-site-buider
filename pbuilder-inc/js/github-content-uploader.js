@@ -1,46 +1,89 @@
 var _GITHUB = {
-	data:{},
-	response:{},
-	counter:0,
-	filter:'',
-	repo:'',
-	get_content: function(properties, finished){
-		this.finished = finished;
-		this.repo = properties.repo;
-		this.filter = properties.filter;
-		if(!this.filter){
-			this.filter = null;
+	
+	data: {},
+	res: {},
+	count: 0,
+	filter: [],
+	repo: '',
+	preloader_count: 0,
+	preloader_length: 1,
+	preloader_bar_id: 'preloader-bar',
+
+	get_content: function(prop, done){
+		_t = this;
+		_t.done = done;
+		_t.repo = prop.repo;
+		_t.filter = prop.filter;
+		if(!_t.filter){
+			_t.filter = null;
 		}
-		loadFile( function(response) {
-			_GITHUB.response = JSON.parse(response);
-			_GITHUB.load();
-		}, 'https://api.github.com/repos/'+this.repo+'git/trees/'+properties.branch); 
+		loadFile( function(_r) {
+			_t.res = JSON.parse(_r);
+			_t.preloader_init();
+			_t.move_preloader(_t.res.tree[0].path);
+			_t.load();
+		}, 'https://api.github.com/repos/'+_t.repo+'git/trees/'+prop.branch); 
 	},
+
 	load: function(){
-		_this = this;
-		if(this.filter){
-			res = this.response.tree[this.counter].path.search(this.filter);
-		}else{
-			res = '1';
-		}
-		if(	res != '-1' ){
-			loadFile( function(response) {
-				if(!_this.data[_this.repo]){
-					_this.data[_this.repo] = {};
+		_t = this;
+		if(	_t.check_filter(_t.count) ){
+			loadFile( function(_r) {
+				if(!_t.data[_t.repo]){
+					_t.data[_t.repo] = {};
 				}
-				_this.data[_this.repo][_this.response.tree[_this.counter].path] = JSON.parse(response).content;
-				_this.next_call();
-			}, this.response.tree[this.counter].url); 
+				_t.data[_t.repo][_t.res.tree[_t.count].path] = JSON.parse(_r).content;
+				_t.move_preloader(_t.res.tree[_t.count].path);
+				_t.next_call();
+			}, _t.res.tree[_t.count].url); 
 		}else{
-			this.next_call();
+			_t.next_call();
 		}
 	},
+
 	next_call: function(){
-		this. counter++;
-		if(this.counter != this.response.tree.length){
-			_GITHUB.load();
+		_t = this;
+		_t.count++;
+		if(_t.count != _t.res.tree.length){
+			_t.load();
 		}else{
-			this.finished();
+			_t.count = 0;
+			_t.preloader_count = 0;
+			document.getElementById(this.preloader_bar_id).style.opacity = '0';
+			_t.done();
 		}
+	},
+
+	check_filter:function(_c){
+		_t = this;
+		_g = false;
+		if(_t.filter){
+			_t.filter.forEach(function (_d, i) {
+	   			_r = _t.res.tree[_c].path.search(_d);
+	   			if(_r!='-1'){	   				
+	   				_g = true;
+	   			}
+			});			
+		}else{
+			_g = true;
+		}
+		return _g;
+	},
+
+	preloader_init:function(){
+		document.getElementById(this.preloader_bar_id).style.opacity = '1';
+		document.getElementById(this.preloader_bar_id).style.width = '0%';
+		for(var _i in this.res.tree) { 
+			if(this.check_filter(_i)){
+				this.preloader_length++;
+			}
+		}
+	},
+
+	move_preloader: function(content){
+		this.preloader_count++;
+		var percentage = (this.preloader_count/this.preloader_length)*100;
+		document.getElementById(this.preloader_bar_id).style.width = percentage+'%';
+		document.getElementById(this.preloader_bar_id).innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+percentage+"%&nbsp;&nbsp;"+content; 
 	}
 }

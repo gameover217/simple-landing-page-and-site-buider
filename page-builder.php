@@ -31,6 +31,10 @@
 		</div>
 	</div>
 
+	<div id="preloader">
+		<div id="preloader-bar"></div>
+	</div>
+
 	<div id="main-header">
 
 		<div class="main-ico" onclick="alert('RESTART is lock on this demo')">
@@ -78,12 +82,15 @@
 		<div id="page-builder">
 				
 		</div>
-
 	</div>
+
 	<div id="inspector" style="overflow:hidden;  padding:1em">
-			Inspector
-			<pre id="inspector-content" style="font-size:9px;"></pre>
-		</div>
+		Inspector
+		<pre id="inspector-content" style="font-size:9px;"></pre>
+	</div>
+
+
+	
 	
 </body>
 </html>
