@@ -60,10 +60,17 @@ var _clear_at_start = function(data){
 this.boiler_repo = 'relu-org/relu-boilerplate/';
 
 var _PBuilder = {
-	'boiler_repo':'',
-	'data':{},
-	'schema':{},
-	'properties':{},	
+	/* PROJECTS AND PAGES */
+	'projects':{
+		
+	},
+	
+	/* TEMPLATE SECTON */
+	'boiler_repo':'', /* template source */
+	'data':{}, /* content example file */
+	'schema':{}, /* properties for html sections */
+	'properties':{}, /* global properties */	
+	/* TECH SECTON */
 	'loaded_components':{},
 	'dragobj':{},
 	'move_element':{
@@ -101,7 +108,6 @@ var _PBuilder = {
 				document.getElementById("page-builder-wraper").style.display = 'block';
 
 				_t.init_Callback(JSON.parse(atob(_GITHUB.data[_t.boiler_repo]['page-content.json'])));
-				//_t.init(js_response);
 			});
 		} 		
 	},
@@ -110,33 +116,6 @@ var _PBuilder = {
 		/* build data model */
 		this.data = data;
 		this.data = _clear_at_start(data);
-		/* add GLOBAL Style */
-		/* LOAD FROM LOCALHOST */
-		/*if(!document.getElementById("page-structure")){
-			var tag = document.createElement("link");
-			tag.href = assets_path + 'components/' + _PBuilder.properties['css_source'] + 'page-structure-' + _PBuilder.properties['css_structure'] + '.css';
-			tag.rel = 'stylesheet';
-			tag.type = 'text/css';
-			tag.id = 'page-structure';
-			document.getElementsByTagName("head")[0].appendChild(tag);
-		}
-		if(!document.getElementById("page-dimensions")){
-			var tag = document.createElement("link");
-			tag.href = assets_path + 'components/' + _PBuilder.properties['css_source'] + 'page-dimensions-' + _PBuilder.properties['css_dimensions'] + '.css';
-			tag.rel = 'stylesheet';
-			tag.type = 'text/css';
-			tag.id = 'page-dimensions';
-			document.getElementsByTagName("head")[0].appendChild(tag);
-		}
-		if(!document.getElementById("page-visual")){
-			var tag = document.createElement("link");
-			tag.href = assets_path + 'components/' + _PBuilder.properties['css_source'] + 'page-visual-' + _PBuilder.properties['css_visual'] + '.css';
-			tag.rel = 'stylesheet';
-			tag.type = 'text/css';
-			tag.id = 'page-visual';
-			document.getElementsByTagName("head")[0].appendChild(tag);
-		}
-		this.load_components();*/
 
 		/* LOAD FROM GITHUB */
 		_GITHUB.get_content({
@@ -154,36 +133,10 @@ var _PBuilder = {
 				}
 				out +='</style>';
 				document.getElementsByTagName("head")[0].innerHTML += out;
-				//_PBuilder.load_components_localhost();
-				_PBuilder.load_components_github();
+				_PBuilder.load_components();
 		});
 	},	
-	/* 3 Load components (templates) to render */
-	load_components_localhost: function(){
-		/* TODO & WARNING - dont load loaded (existing) components */
-		console.log('## LOAD COMPONENTS ##');
-		_this = this;
-		if(this.schema){
-			var section_name = Object.keys(this.schema)[this.load_counter];
-			if(section_name == undefined){
-				console.log('components loaded');
-				console.log(this.loaded_components);
-				this.load_components_callback();
-				return false;
-			}else{
-				console.log('section_name:'+section_name);
-				var comp_name = this.schema[ section_name ]['default_component'];
-				console.log('load compoent:'+comp_name);
-				loadFile( function(response) {
-					var schema_el_length = Object.keys(_this.schema).length;
-					_this.loaded_components[comp_name] = response;
-					_this.load_counter++;
-					_this.load_components_localhost();
-				}, assets_path + 'components/' + _this.properties.components_path + comp_name + '.doT.html'); 
-			}
-		}
-	},
-	load_components_github(){
+	load_components(){
 		console.log('## LOAD COMPONENTS GITHUB ##');
 		_this = this;
 		var filter = [];
@@ -200,9 +153,8 @@ var _PBuilder = {
 			/* callback */
 			function() {
 				var _in = _GITHUB.data['relu-org/ArthurWellesleyComponents/'];
-				for(var _i in _in) { 
-					console.log(_i.split(".")[0]); 
-					_this.loaded_components[_i.split(".")[0]] = atob(_in[_i]);
+				for(var _i in _in) {					
+					_this.loaded_components[_i] = atob(_in[_i]);
 				}
 				console.log(_this.loaded_components);
 				_this.load_components_callback();
@@ -251,20 +203,7 @@ var _PBuilder = {
 	},
 
 
-	/* Load new boilerplate */
-	load_html : function(packagename){
-		/* load from file */
-		/*loadFile( function(html_response) {
-			document.getElementById("page-builder").innerHTML = html_response;
-			document.getElementById("page-builder-wraper").style.display = 'block';
-			// add SCRIPT 
-			var tag = document.createElement("script");
-			tag.src = assets_path + 'boiler-plates/' + packagename + '/page-script.js';
-			document.getElementsByTagName("head")[0].appendChild(tag);
-		}, assets_path + 'boiler-plates/' + packagename + '/page.html'); */
-		alert('jazdanazad');
-
-	},	
+	
 	render: function(data, tpl_part, target){
 		
 		console.log('render');
@@ -471,11 +410,6 @@ var _PBuilder = {
 			
 		}
 		save_local_grid();
-		//console.log(this.J_kIx(this.edited_obj.section));
-		//var out = document.getElementById('text-editor').value;
-		//out = out.replace(/<br\s*\/?>/mg,"\n");
-		//this.edited_obj['edited-node'].innerHTML = out;
-		//this.data[this.J_kIx(this.edited_obj.section)].elements[this.edited_obj.DOMsectionIndex].desc = out;
 	},
 
 	/* ------------------------ */
