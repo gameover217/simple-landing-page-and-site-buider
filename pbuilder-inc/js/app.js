@@ -6,7 +6,7 @@
 var assets_path = "pbuilder-assets/";
 var upload_path = "pbuilder-upload/";
 /*clear localsorage*/
-//localStorage.clear();
+localStorage.clear();
 window.page_slug = "strona-xxx";
 
 var new_object = [{
@@ -35,6 +35,12 @@ var loadFile = function (callback, file, post_data) {
         }
         if(xobj.readyState == 4 && xobj.status == "403") {        	
         	console.log('loadFile:error 403');
+        	var msg = JSON.parse(xobj.responseText);
+        	if(msg.message){
+        		document.getElementById("preloader-bar").setAttribute('style','opacity:1; background-color:rgb(164, 25, 25); width:100%');
+        		document.getElementById("preloader-bar").innerHTML = msg.message;
+        		//document.getElementById("modal-content-wrapper").innerHTML += '<div><a href="'+msg.documentation_url+'" target="_blank">'+msg.documentation_url+'</a></div>';
+        	}
         }
         if(xobj.status == "404") {  
         	alert('FATAL ERROR\n'+file+' \nDOESNT EXIST')
@@ -49,38 +55,53 @@ var _clear_at_start = function(data){
 	//data['elements-agregator'] = {'elements':[]};
 	return data;
 }
+/* boilerplate repo */
+this.boiler_repo = 'relu-org/relu-boilerplate/';
+
 var _PBuilder = {
-	'dragobj':{},
+	'boiler_repo':'',
 	'data':{},
 	'schema':{},
 	'properties':{},	
 	'loaded_components':{},
-	'load_counter':0,
+	'dragobj':{},
 	'move_element':{
 		'from':{
 			'section':'section_id',
-			'index':0
+			'index':null
 		},
 		'to':{
 			'section':'section_id',
-			'index':0
+			'index':null
 		}
 	},
 	/* 1 INIT - load content data */
-	init: function(input_data){
-		_this = this; 
-		_this.schema = input_data.schema; 
-		_this.properties = input_data.properties; 
-		_this.load_counter = 0;
-
+	init: function(boiler_repo){
+		var _t = this;
+		_t.boiler_repo = boiler_repo;
 		/* Render App from file*/
 		if(localStorage.actual_landing_data){
-			this.init_Callback(JSON.parse(localStorage.actual_landing_data));
+			//this.init_Callback(JSON.parse(localStorage.actual_landing_data));
 		}else{
-			loadFile( function(response) {
-				localStorage.actual_landing_data = response;
-				_this.init_Callback(JSON.parse(response));
-			}, assets_path+'data-base/composition1.json');
+			
+			_GITHUB.get_content({
+				'repo':_t.boiler_repo,
+				'branch':'master',
+				'filter':['page'],
+			},
+			/* callback */
+			function() {
+				_t.data = JSON.parse(atob(_GITHUB.data[_t.boiler_repo]['page-content.json']));
+				_t.schema = JSON.parse(atob(_GITHUB.data[_t.boiler_repo]['page-properties.json'])).schema;
+				_t.properties = JSON.parse(atob(_GITHUB.data[_t.boiler_repo]['page-properties.json'])).properties;
+				//localStorage.actual_landing_data = _GITHUB.data[_t.boiler_repo]['page-content.json'];
+				
+				document.getElementById("page-builder").innerHTML = atob(_GITHUB.data[_t.boiler_repo]['page.html']);
+				document.getElementById("page-builder-wraper").style.display = 'block';
+
+				_t.init_Callback(JSON.parse(atob(_GITHUB.data[_t.boiler_repo]['page-content.json'])));
+				//_t.init(js_response);
+			});
 		} 		
 	},
 	/* 2 INIT callback - update app object */
@@ -231,47 +252,59 @@ var _PBuilder = {
 
 	/* Load new boilerplate */
 	load_html : function(packagename){
-		loadFile( function(html_response) {
+		/* load from file */
+		/*loadFile( function(html_response) {
 			document.getElementById("page-builder").innerHTML = html_response;
 			document.getElementById("page-builder-wraper").style.display = 'block';
-			/* add SCRIPT */
+			// add SCRIPT 
 			var tag = document.createElement("script");
 			tag.src = assets_path + 'boiler-plates/' + packagename + '/page-script.js';
 			document.getElementsByTagName("head")[0].appendChild(tag);
-		}, assets_path + 'boiler-plates/' + packagename + '/page.html'); 
+		}, assets_path + 'boiler-plates/' + packagename + '/page.html'); */
+		alert('jazdanazad');
+
 	},	
 	render: function(data, tpl_part, target){
-
-		var out = '';
-		out += '<div class="tech-wrapper">';
-		/* check is this section have delete */	
-
-		/*out += '<div class="drag"> <a href="#none"><i class="material-icons">&#xE25D;</i></a></div>';*/
 		
-		if(this.schema[target].remove){
-			out += '<div class="remove" onmousedown="event.stopPropagation()" onclick="_PBuilder.remove(this,\''+this.schema[target].remove+'\')"><a href="#none"><i class="material-icons">&#xE92B;</i></a></div>';
-		}
-		if(this.schema[target].edit_this){
-			out += '<div class="edit" onmousedown="event.stopPropagation()" onclick="_PBuilder.edit(this); return false"><a href="#openModal"><i class="material-icons">&#xE254;</i></a></div>';
-		}
+		console.log('render');
+		var out = '';
+
 		out += tpl_part;
-		out += '</div>';
+		//out += '</div>';
 		out = out.replace(/\\"/g, '"');
 		/* create data */
 
 		var tempHTML = doT.template(out);
 		var tempCONTENT = data;
+
+		var controlls='<div class="controlls">';
+		//out += '<div class="tech-wrapper">';
+		/* check is this section have delete */	
+
+		/*out += '<div class="drag"> <a href="#none"><i class="material-icons">&#xE25D;</i></a></div>';*/
 		
+		if(this.schema[target].remove){
+			controlls += '<div class="controll remove" onmousedown="event.stopPropagation()" onclick="_PBuilder.remove(this,\''+this.schema[target].remove+'\')"><a href="#none"><i class="material-icons">&#xE92B;</i></a></div>';
+		}
+		if(this.schema[target].edit_this){
+			controlls += '<div class="controll edit" onmousedown="event.stopPropagation()" onclick="_PBuilder.edit(this); return false"><a href="#openModal"><i class="material-icons">&#xE254;</i></a></div>';
+		}
+		controlls += '</div>';
+
 		/* rebuild exist element */
 		var elements = document.getElementById(target).children;
 		for( var i = 0; i<elements.length; i++){
 			if(elements[i].classList.contains('gu-transit')){
+				console.log(elements[i]);
 				elements[i].outerHTML = tempHTML(tempCONTENT);
+				document.getElementById(target).getElementsByClassName('bx')[this.move_element.to.index].innerHTML += controlls;
 				return false;
 			};
 		}
 		/* add new element */
 		document.getElementById(target).innerHTML += tempHTML(tempCONTENT);
+		document.getElementById(target).lastChild.innerHTML += controlls;
+		
 	},
 	/* ------------------------ */
 	/* drag and drop controller */
@@ -349,7 +382,7 @@ var _PBuilder = {
 		this.e_obj.section = getClosest(el, 'section');
 		
 		this.e_obj.section_index = this.J_kIx(this.e_obj.section.id);
-		this.e_obj.element = getClosest(el, '.tech-wrapper');
+		this.e_obj.element = getClosest(el, '.bx');
 		this.e_obj.element_index = this.DOM_Ix( this.e_obj.element );
 		this.e_obj.constrols = this.e_obj.element.querySelectorAll('[data-bx]');
 		this.e_obj.data_fragment = this.data[this.e_obj.section_index].elements[this.e_obj.element_index];
@@ -536,31 +569,41 @@ function gui_designers(){
 }
 
 function gui_save(){
-	var data = window.btoa(JSON.stringify(_PBuilder.data));
-	var schema = window.btoa(JSON.stringify(_PBuilder.schema));
-	var properties = window.btoa(JSON.stringify(_PBuilder.properties));
-	window.location.href="#openModal";
-	out = "Generating static WebPage now...<br>Please wait...";
-	document.getElementById('modal-content').innerHTML = out;
 	
-	loadFile( function(response) {		
-			out = "<b>Your site was created on:</b><br/>";
-			out += "pbuilder-upload/"+window.page_slug;
-			out += "<p>Copy this link and enjoy!!</p>";
+	if(Object.keys(_GITHUB.data).length == 0){
+		alert('add page to published');
+	}else{
 
-			out = response;
-			document.getElementById('modal-content').innerHTML = out;
-			//document.getElementById('body').innerHTML = response;
-			//localStorage.actual_landing_data = response;
-			//_this.init_Callback(JSON.parse(response));
-	},
-	 'render-static.php', 
-	{
-		"data":data,
-		"properties":properties,
-		"schema":schema,
-		"page_slug":window.page_slug
-	});
+		var data = window.btoa(JSON.stringify(_PBuilder.data));
+		var schema = window.btoa(JSON.stringify(_PBuilder.schema));
+		var properties = window.btoa(JSON.stringify(_PBuilder.properties));
+
+
+		window.location.href="#openModal";
+		out = "Generating static WebPage now...<br>Please wait...";
+		document.getElementById('modal-content').innerHTML = out;
+		
+		loadFile( function(response) {		
+				out = "<b>Your site was created on:</b><br/>";
+				out += "pbuilder-upload/"+window.page_slug;
+				out += "<p>Copy this link and enjoy!!</p>";
+
+				out = response;
+				document.getElementById('modal-content').innerHTML = out;
+				//document.getElementById('body').innerHTML = response;
+				//localStorage.actual_landing_data = response;
+				//_this.init_Callback(JSON.parse(response));
+		},
+		 'render-static.php', 
+		{
+			"data":data,
+			"properties":properties,
+			"schema":schema,
+			"page_slug":window.page_slug,
+			"css":_GITHUB.data[_PBuilder.properties.css_source],
+			"html":_GITHUB.data[_PBuilder.boiler_repo]['page.html']
+		});
+	}
 }
 
 

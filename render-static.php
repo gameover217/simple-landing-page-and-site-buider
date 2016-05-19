@@ -7,19 +7,29 @@
 	$properties = json_decode(base64_decode($input['properties']));
 	$properties =  (array) $properties;
 
-	/*  add CSS */
+	$css = $input['css'];
 
-	$css = '';
+	foreach ($css as $key => $value) {
+		$out_css .= base64_decode($value);
+	}
+
+	/*$css = '';
 	$css .=  file_get_contents('pbuilder-assets/'.$properties['css_source'] .'/page-structure-' .$properties['css_structure'].'.css');
 	$css .=  file_get_contents('pbuilder-assets/'.$properties['css_source'] .'/page-dimensions-' .$properties['css_dimensions'].'.css');
 	$css .=  file_get_contents('pbuilder-assets/'.$properties['css_source'] .'/page-visual-' .$properties['css_visual'].'.css');
-	
-	$css_file = "/css/style.css";
+	*/	
+
+	$tech_array_file = "inc/properties.json";
+	$tech_array = array_merge($properties, $schema, $data);
+
+
+	$css_file = "css/style.css";
 	$css_link .= '<link rel="stylesheet" type="text/css" href="'.$css_file.'">';
 
 	/* ------ */
 
 	require_once('simple_html_dom.php');
+	//$html = 
 	$html = file_get_html('pbuilder-assets/boiler-plates/'.$properties['boilerplate'].'/page.html');
 
 	$counter = 0;
@@ -32,7 +42,6 @@
 		foreach($data[$counter] as $component_data){
 			$comp_out = "";
 			foreach ($component_data as $key1 => $value1) {
-				var_dump($value1);
 				$comp_out .= $component;
 				$comp_out = str_replace('{{=it.title}}',$value1->title,$comp_out);
 				$comp_out = str_replace('{{=it.description}}',$value1->description,$comp_out);
@@ -56,7 +65,11 @@
 	$out_array = array(
 		array(
 			'filePath' => $css_file,
-			'fileContent' => base64_encode($css)
+			'fileContent' => base64_encode($out_css)
+		),
+		array(
+			'filePath' => $file,
+			'fileContent' => base64_encode($html)
 		),
 		array(
 			'filePath' => $file,
@@ -64,7 +77,11 @@
 		)
 	);
 	$out = json_encode($out_array);
-	echo $out;
+
+	echo '<textarea>';
+	echo $html;
+	echo '</textarea>';
+
 	//header('Content-Type: text/html; charset=utf-8');
 	//header('Location: http://www.example.com/');
 
@@ -85,7 +102,7 @@
 
 
 
-<form method="POST" action="http://127.0.0.1/Otto-von-Bismarck/index.php">
+<form method="POST" action="http://uigen.org/Otto-von-Bismarck/index.php">
 	<input type="hidden" name="data" value='<?php echo $out;?>'>
 	<input type="text" name="repoName" value="testpage">
 

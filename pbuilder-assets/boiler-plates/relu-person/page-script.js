@@ -1,6 +1,7 @@
 _PBuilder.init({
 	'properties':{
 		'global_source':'github', /* localhost, github */
+		'global_upload':'github', /* localhost, github */
 		'page_title':'Relu person',
 		'page_slug':'relu-person',
 		'boilerplate':'relu-person',

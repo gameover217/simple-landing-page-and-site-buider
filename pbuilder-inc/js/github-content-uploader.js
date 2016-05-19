@@ -72,8 +72,7 @@ var _GITHUB = {
 	},
 
 	preloader_init:function(){
-		document.getElementById(this.preloader_bar_id).style.opacity = '1';
-		document.getElementById(this.preloader_bar_id).style.width = '0%';
+		document.getElementById(this.preloader_bar_id).setAttribute("style", "opacity:1; width:0%"); 
 		for(var _i in this.res.tree) { 
 			if(this.check_filter(_i)){
 				this.preloader_length++;
@@ -85,6 +84,6 @@ var _GITHUB = {
 		this.preloader_count++;
 		var percentage = (this.preloader_count/this.preloader_length)*100;
 		document.getElementById(this.preloader_bar_id).style.width = percentage+'%';
-		document.getElementById(this.preloader_bar_id).innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+percentage+"%&nbsp;&nbsp;"+content; 
+		document.getElementById(this.preloader_bar_id).innerHTML = ""+parseInt(percentage)+"% "+content; 
 	}
 }

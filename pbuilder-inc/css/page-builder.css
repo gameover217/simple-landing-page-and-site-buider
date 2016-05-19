@@ -8,6 +8,7 @@ body{
 	position:fixed;
 	top:0;
 	width:99%;
+	height:40px;
 	background-color:#333; margin:0;
 	font-family: sans;
 	padding:0.5%;
@@ -41,7 +42,7 @@ body{
 	width:10%;
 	top:3em;
 	background-color: #333;
-	padding:0.6em 0.2em;
+	padding:0.6em 0;
 
 	color:#ddd;
 	cursor:pointer;
@@ -49,9 +50,7 @@ body{
 	z-index:100;
 	font-family: sans;
 }
-#templates:hover{
-	width:10.5%;
-}
+
 #templates ul{
 	margin:0;
 	padding:0;
@@ -250,41 +249,29 @@ section:hover{
 	outline:none !important;
 	background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAKUlEQVQImV3IsQ0AIAwDsFzpe/JU74MNoQ5eHPQ3Myc70Ox4+QeaHegFW1Atvxb1tq8AAAAASUVORK5CYII=');
 }
-.gu-mirror .edit, .gu-mirror .remove{
-	display:none;
-}
 
 
-.tech-wrapper{
-	position:relative;	
-}
-.tech-wrapper:hover{
-	outline: #333 solid 2px;
-	cursor: move;
-	cursor: all-scroll;
-}
-.tech-wrapper .edit, .tech-wrapper .remove, .tech-wrapper .drag{
-	margin:0em;
-	padding:0.1em;
-	position:absolute;
-	background-color: #333;
-	line-height: 0.7em;
-	z-index:40;
+
+
+
+
+.controlls{
 	opacity:0;
-	margin-top:-0.5em;
+	position:absolute;
+	top:-5px;
+	background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAFElEQVQImWNgQAX/oZgSAQYsAv8B/HoJ93wX1z8AAAAASUVORK5CYII=);
 }
-.tech-wrapper .remove{			
-	margin-left:30px;
-}
-.tech-wrapper .drag{			
-	margin-left:60px;
-}
-.tech-wrapper .remove a, .tech-wrapper .edit a, .tech-wrapper .drag a{
-	color:#fff;
-}
-.tech-wrapper:hover > .edit, .tech-wrapper:hover > .remove, .tech-wrapper:hover > .drag{
+.bx:hover > .controlls{
 	opacity:1;
 }
+.controll{
+	display:inline-block;
+}
+.controll a{
+	color:#fff;
+}
+
+
 /* MODAL */
 .modalDialog {
 	position: fixed;   
@@ -400,12 +387,14 @@ section:hover{
 #preloader{
 	position:fixed; 
 	width:90%; 
-	bottom:0; 
+	top:54px; 
 	left:10%;
 	z-index: 90;
 	overflow: hidden;
+
 }
 #preloader-bar{
+	opacity:0;
 	height:1.5em;
 	transition: opacity 1s, width .5s;
 	background-color: #0077B1;
@@ -416,6 +405,7 @@ section:hover{
 	color:#fff;
 	overflow: hidden;	
 	font-family: sans-serif;
+	padding:0 1em;
 }
 
 
