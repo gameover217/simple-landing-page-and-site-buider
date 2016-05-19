@@ -16,24 +16,25 @@ rel="stylesheet">
 	</div>
 	<!-- MAIN HEADER -->
 	<div id="main-header">	
-		<img src="pbuilder-inc/img/UiGEN-logo.svg" width="115" height="36"/>	
+		<div style="flex:0 0 10%">
+			<img src="pbuilder-inc/img/UiGEN-logo.svg" width="115" height="36" style="margin:0.5em"/>
+		</div>	
 		<div>
 			<h1>UiGEN.org page buider</h1>
 			<h2>Ultra light static websites crator</h2>
 			<a href="https://github.com/dadmor/simple-landing-page-and-site-buider">https://github.com/dadmor/simple-landing-page-and-site-buider</a>
 		</div>
-		<div class="main-ico" onclick="alert('RESTART is lock on this demo')">
-			<i class="material-icons">&#xE863;</i>
-			RESTART
-		</div>
-		<div class="main-ico" onclick="gui_save()">
-			<i class="material-icons">&#xE2C0;</i>
-			SAVE
-		</div>
-		<div id="gui_zoom_button" class="main-ico" onclick="gui_designers()">
+		
+		
+		<div id="gui_zoom_button" class="main-ico" onclick="gui_designers()" style="margin-left: auto;">
 			<i class="material-icons">&#xE323;</i>
 			DESIGN MODE
 		</div>
+		<div class="main-ico" onclick="gui_save()">
+			<i class="material-icons">&#xE2C0;</i>
+			SAVE PAGE
+		</div>
+		
 	</div>
 	<!-- LEFTBAR -->
 	<div id="templates">
