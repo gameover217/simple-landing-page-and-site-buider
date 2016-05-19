@@ -15,6 +15,7 @@ body{
 	color:#aaa;
 	font-size:0.4em;
 	z-index:100;
+	display:flex;
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
@@ -199,20 +200,26 @@ section:hover{
 	color:#fff;
 }
 .material-icons{
-	vertical-align: -0.35em;
+	vertical-align: middle;
 
 }
 .menu-tab{
 	font-size:12px;
 	letter-spacing: 0.15em;
 	text-transform: uppercase;
-	padding-top:0.1em;
+	padding:0.2em 0.4em; 
 	border-bottom:1px solid #444;
-	margin-left:0.5%;
+	line-height: 2.5em;
 }
 .menu-tab:hover{
 	background-color:#71B6D8;
 	color:#000;
+}
+.menu-tab a{
+	color:#eee;
+	text-decoration: none;
+	width: 100%;
+	display: inline-block;
 }
 /* save button */
 .button{

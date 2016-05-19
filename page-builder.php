@@ -15,7 +15,13 @@ rel="stylesheet">
 		<div id="preloader-bar"></div>
 	</div>
 	<!-- MAIN HEADER -->
-	<div id="main-header">
+	<div id="main-header">	
+		<img src="pbuilder-inc/img/UiGEN-logo.svg" width="115" height="36"/>	
+		<div>
+			<h1>UiGEN.org page buider</h1>
+			<h2>Ultra light static websites crator</h2>
+			<a href="https://github.com/dadmor/simple-landing-page-and-site-buider">https://github.com/dadmor/simple-landing-page-and-site-buider</a>
+		</div>
 		<div class="main-ico" onclick="alert('RESTART is lock on this demo')">
 			<i class="material-icons">&#xE863;</i>
 			RESTART
@@ -28,19 +34,11 @@ rel="stylesheet">
 			<i class="material-icons">&#xE323;</i>
 			DESIGN MODE
 		</div>
-		<h1>UiGEN.org page buider</h1>
-		<h2>Ultra light static websites crator</h2>
-		<a href="https://github.com/dadmor/simple-landing-page-and-site-buider">https://github.com/dadmor/simple-landing-page-and-site-buider</a>
 	</div>
 	<!-- LEFTBAR -->
 	<div id="templates">
 		<div class="menu-tab">
-		<a href="http://uigen.org/Otto-von-Bismarck?remote">login</a>
-			<!-- <div onclick="github_login();">login</div> -->
-		</div>
-		<div class="menu-tab">
-		<a href="http://uigen.org/Otto-von-Bismarck?remote">get-user</a>
-			<!-- <div onclick="github_login();">login</div> -->
+			<a href="http://uigen.org/Otto-von-Bismarck?remote"> <i class="material-icons">&#xE913;</i> login</a>
 		</div>
 		<div class="menu-tab">
 			<i class="material-icons">&#xE88A;</i> Projects
@@ -72,13 +70,6 @@ rel="stylesheet">
 		<pre id="inspector-content" style="font-size:9px;"></pre>
 	</div>
 
-	<script>
-	function github_login(){
-		loadFile( function(response) {
-			alert(response);
-		}, 'http://uigen.org/Otto-von-Bismarck?remote'); 
-		
-	}
-	</script>
+	
 	
 </body>
