@@ -10,12 +10,12 @@ localStorage.clear();
 window.page_slug = "strona-xxx";
 
 var new_object = [{
-		"title": "Propably best new article on the internet!",
-        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-        "background": upload_path+"unsplash.example2.jpeg",
-        "linkname": "Learn more",
-        "linktarget": "html://google.com"
-   	}];
+	"title": "Propably best new article on the internet!",
+	"description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+	"background": upload_path+"unsplash.example2.jpeg",
+	"linkname": "Learn more",
+	"linktarget": "html://google.com"
+}];
 
 var loadFile = function (callback, file, post_data, error) {
     var xobj = new XMLHttpRequest();
@@ -23,7 +23,6 @@ var loadFile = function (callback, file, post_data, error) {
     if(post_data){
 		xobj.open('POST', file,true); 
 		xobj.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-
     }else{
     	xobj.open('GET', file, true); 
     }
@@ -49,6 +48,18 @@ var loadFile = function (callback, file, post_data, error) {
     };
     xobj.send('data='+btoa(JSON.stringify(post_data)));  
 }
+var load_content = function(callback,path,data){	
+	loadFile( function(response) {		
+		var tempHTML = doT.template(response);
+		var tempCONTENT = data;
+		callback(tempHTML(tempCONTENT));
+	},path,null,
+	function(msg){
+		alert('app error:content file doesnt extst');
+		console.log('msg');
+	});
+}
+
 /* on first load clear elements with section (if databese have elements to render) */
 var _clear_at_start = function(data){
 	/* hardocoded alweays clear elements-agregator */
@@ -56,9 +67,58 @@ var _clear_at_start = function(data){
 	//data['elements-agregator'] = {'elements':[]};
 	return data;
 }
+
+var _PROJECT = {
+	"token":null,
+	"organisation_name":null,
+	"project_name":null,
+	"published_url":null,
+	"sitemap":{
+		"urlset":{
+			"url":[],
+			"_xmlns":"http://www.sitemaps.org/schemas/sitemap/0.9"
+		}
+	},
+	// TODO parse sitemap to good XML format (json structure is 1:1 :D)
+	// https://github.com/abdmob/x2js
+	// http://www.sitemappro.com/google-sitemap.html
+	
+	"set_status": function(){
+		if(!this.organisation_name){
+			console.log('token:null');
+			load_content( function(_r) {	
+				window.location.hash = '#openModal';
+				document.getElementById('modal-title').innerHTML = "UiGEN LOGIN";
+				document.getElementById('modal-content').innerHTML = _r;
+			},'pbuilder-inc/gui-content/_PROJECT-token-null.html',{});
+
+			return false;
+		}
+		if(!this.organisation_name){
+			alert('organisation:null');
+			return false;
+		}
+		if(this.sitemap.urlset.url.length == 0){
+			alert('projects:null');
+			return false;
+		}
+		if(!this.project_name){
+			alert('selected project:null');
+			return false;
+		}
+		
+	}
+}
+
+_PROJECT.set_status();
+/*
+{"loc":"http://www.sitemappro.com/","lastmod":"2016-05-27T23:55:42+01:00","changefreq":"daily","priority":"0.5"},
+{"loc":"http://www.sitemappro.com/download.html","lastmod":"2016-05-26T17:24:27+01:00","changefreq":"daily","priority":"0.5"}
+*/
+
+
 /* boilerplate repo */
 this.boiler_repo = 'relu-org/relu-boilerplate/';
-
 var _PBuilder = {
 	/* PROJECTS AND PAGES */
 	'projects':{
@@ -369,7 +429,7 @@ var _PBuilder = {
 			alert(val);
 			return val.replace(/<\/?b>/g,'');
 		});*/
-		out += '<a id="save-content" onclick="_PBuilder.editor_save()" href="#close">Save</a>';
+		out += '<a id="save-content" class="button" onclick="_PBuilder.editor_save()" href="#close">Save</a>';
 		out += '</div>';
 		document.getElementById('modal-content').innerHTML = out;
 	},

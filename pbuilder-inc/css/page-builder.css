@@ -215,13 +215,22 @@ section:hover{
 	color:#000;
 }
 /* save button */
-#save-content{
+.button{
+	font-size:1.5em;
 	line-height: 3em;
 	background-color: #0077B1;
 	color:#fff;
 	padding: 0.5em 1em;
 	text-decoration: none;
 	text-transform: uppercase;
+	box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
+	border-bottom:1px solid #444;
+	cursor:pointer;
+}
+.button:hover{
+	box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.5), 0px 2px 10px 0px rgba(0, 0, 0, 0.5);
+	border-bottom:2px solid #444;
+	margin-top:-1px;
 }
 
 
@@ -278,9 +287,9 @@ section:hover{
 	top: 0;
 	right: 0;
 	bottom: 0;
-	left: 10%;
+	left: 0;
 	background: rgba(255, 255, 255, 0.9);
-	z-index: 10;
+	z-index: 200;
 	opacity:0;
 	pointer-events: none;
 	font-family: sans;
@@ -296,9 +305,9 @@ section:hover{
     pointer-events: auto;
 }
 .modalDialog > div {
-    width: 90%;
+    width: 70%;
     position: relative;
-    margin: 5% auto;
+    margin: 7% auto;
     padding: 20px 40px 25px 40px; 
     box-shadow: 0px 0px 5px #C0C0C0;  
 	   
