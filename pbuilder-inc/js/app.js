@@ -17,7 +17,7 @@ var new_object = [{
         "linktarget": "html://google.com"
    	}];
 
-var loadFile = function (callback, file, post_data) {
+var loadFile = function (callback, file, post_data, error) {
     var xobj = new XMLHttpRequest();
     //xobj.overrideMimeType("application/json");
     if(post_data){
@@ -27,23 +27,24 @@ var loadFile = function (callback, file, post_data) {
     }else{
     	xobj.open('GET', file, true); 
     }
-    
-
     xobj.onreadystatechange = function () {
         if (xobj.readyState == 4 && xobj.status == "200") {
             callback(xobj.responseText);
         }
         if(xobj.readyState == 4 && xobj.status == "403") {        	
-        	console.log('loadFile:error 403');
         	var msg = JSON.parse(xobj.responseText);
+        	msg.error = 'loadFile:error 403';
         	if(msg.message){
         		document.getElementById("preloader-bar").setAttribute('style','opacity:1; background-color:rgb(164, 25, 25); width:100%');
         		document.getElementById("preloader-bar").innerHTML = msg.message;
         		//document.getElementById("modal-content-wrapper").innerHTML += '<div><a href="'+msg.documentation_url+'" target="_blank">'+msg.documentation_url+'</a></div>';
         	}
+        	error(msg);
         }
         if(xobj.status == "404") {  
-        	alert('FATAL ERROR\n'+file+' \nDOESNT EXIST')
+			var msg ={};
+			msg.error = 'FATAL ERROR\n'+file+' \nDOESNT EXIST';
+        	error(msg);        	
         }
     };
     xobj.send('data='+btoa(JSON.stringify(post_data)));  
@@ -594,7 +595,7 @@ function gui_save(){
 				//localStorage.actual_landing_data = response;
 				//_this.init_Callback(JSON.parse(response));
 		},
-		 'render-static.php', 
+		 'pbuilder-publisher/render-static.php', 
 		{
 			"data":data,
 			"properties":properties,
@@ -602,6 +603,20 @@ function gui_save(){
 			"page_slug":window.page_slug,
 			"css":_GITHUB.data[_PBuilder.properties.css_source],
 			"html":_GITHUB.data[_PBuilder.boiler_repo]['page.html']
+		},
+		function(msg){
+			console.log('msg');
+
+			var data = window.btoa(JSON.stringify(_PBuilder.data));
+			var schema = window.btoa(JSON.stringify(_PBuilder.schema));
+			var properties = window.btoa(JSON.stringify(_PBuilder.properties));
+
+			var out = "<h3>This version doesnt have unlock external publisher.</h3>";
+			out += "<p>Your data (encoded to base64) its here: </p>";
+			out += "data:<textarea style='font-size:11px'>"+data+"</textarea>"
+			out += "schema:<textarea style='font-size:11px'>"+schema+"</textarea>"
+			out += "properties:<textarea style='font-size:11px'>"+properties+"</textarea>"
+			document.getElementById('modal-content').innerHTML = out;
 		});
 	}
 }
