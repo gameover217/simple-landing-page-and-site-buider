@@ -3,12 +3,14 @@ rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="pbuilder-inc/css/dragula.min.css">
 <link rel="stylesheet" type="text/css" href="pbuilder-inc/css/medium-editor.min.css">
 <link rel="stylesheet" type="text/css" href="pbuilder-inc/css/page-builder.css">
+
 <script type="text/javascript" src="pbuilder-inc/js/dragula.min.js"></script>
-<script type="text/javascript" src="pbuilder-inc/js/medium-editor.min.js"></script>
+<!-- <script type="text/javascript" src="pbuilder-inc/js/medium-editor.min.js"></script> -->
 <script type="text/javascript" src="pbuilder-inc/js/doT.min.js"></script>
-<script type="text/javascript" src="pbuilder-inc/js/app.js"></script>
+
 <script type="text/javascript" src="pbuilder-inc/js/dropzone.min.js"></script>
 
+	
 <body id="body"  >
 	<!-- PRELOADER -->
 	<div id="preloader">
@@ -16,7 +18,7 @@ rel="stylesheet">
 	</div>
 	<!-- MAIN HEADER -->
 	<div id="main-header">	
-		<div style="flex:0 0 10%">
+		<div style="flex:0 0 11.6%">
 			<img src="pbuilder-inc/img/UiGEN-logo.svg" width="115" height="36" style="margin:0.5em"/>
 		</div>	
 		<div>
@@ -38,16 +40,29 @@ rel="stylesheet">
 	</div>
 	<!-- LEFTBAR -->
 	<div id="templates">
-		<div class="menu-tab">
+
+		<div id="login-tab" class="menu-tab">
 			<a href="http://uigen.org/Otto-von-Bismarck?remote"> <i class="material-icons">&#xE913;</i> login</a>
+			<div id="tooltip-login" class="tooltip">
+				<div class="tooltip-arrow"></div>
+				<div class="tooltip-content">Please login first</div>
+			</div>
 		</div>
-		<div class="menu-tab">
+		<div id="projects-tab" class="menu-tab" onclick="my_tab(this)">
 			<i class="material-icons">&#xE88A;</i> Projects
+			<div id="tooltip-projects" class="tooltip">
+				<div class="tooltip-arrow"></div>
+				<div class="tooltip-content">Add first website</div>
+			</div>
 		</div>
-		<div class="menu-tab">
+		<div id="pages-tab" class="menu-tab" onclick="my_tab(this);">
 			<i class="material-icons">&#xE24D;</i> Pages
+			<div id="tooltip-pages" class="tooltip">
+				<div class="tooltip-arrow"></div>
+				<div class="tooltip-content">Create home page</div>
+			</div>
 		</div>
-		<div class="menu-tab">
+		<div id="templates-tab" class="menu-tab" onclick="my_tab(this);">
 			<i class="material-icons">&#xE8F1;</i> Templates
 		</div>
 		<i class="material-icons">&#xE8F1;</i>
@@ -56,6 +71,12 @@ rel="stylesheet">
 			<li>2</li>
 			<li>3</li>
 		</ul>
+	</div>
+
+	<div id="submenu">
+		<div id="login-tab" class="menu-tab">
+			<i class="material-icons">&#xE89C;</i> add new project
+		</div>
 	</div>
 
 	<!-- PAGEBUILDER -->
@@ -74,3 +95,8 @@ rel="stylesheet">
 	
 	
 </body>
+<script type="text/javascript" src="pbuilder-inc/js/_tech.js"></script>
+<script type="text/javascript" src="pbuilder-inc/js/_project.js"></script>
+<script type="text/javascript" src="pbuilder-inc/js/_pbuilder.js"></script>
+<script type="text/javascript" src="pbuilder-inc/js/app.js"></script>
+

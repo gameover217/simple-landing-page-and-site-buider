@@ -2,506 +2,9 @@
 /* 1. clear #s~ node from inner elements !!!! */
 /* 2. find and kill this.e_obj.section = getClosest(el, '.bx-wrapper'); */
 
-/* pbuilder assets path */
-var assets_path = "pbuilder-assets/";
-var upload_path = "pbuilder-upload/";
-/*clear localsorage*/
-localStorage.clear();
-window.page_slug = "strona-xxx";
-
-var new_object = [{
-	"title": "Propably best new article on the internet!",
-	"description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-	"background": upload_path+"unsplash.example2.jpeg",
-	"linkname": "Learn more",
-	"linktarget": "html://google.com"
-}];
-
-var loadFile = function (callback, file, post_data, error) {
-    var xobj = new XMLHttpRequest();
-    //xobj.overrideMimeType("application/json");
-    if(post_data){
-		xobj.open('POST', file,true); 
-		xobj.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-    }else{
-    	xobj.open('GET', file, true); 
-    }
-    xobj.onreadystatechange = function () {
-        if (xobj.readyState == 4 && xobj.status == "200") {
-            callback(xobj.responseText);
-        }
-        if(xobj.readyState == 4 && xobj.status == "403") {        	
-        	var msg = JSON.parse(xobj.responseText);
-        	msg.error = 'loadFile:error 403';
-        	if(msg.message){
-        		document.getElementById("preloader-bar").setAttribute('style','opacity:1; background-color:rgb(164, 25, 25); width:100%');
-        		document.getElementById("preloader-bar").innerHTML = msg.message;
-        		//document.getElementById("modal-content-wrapper").innerHTML += '<div><a href="'+msg.documentation_url+'" target="_blank">'+msg.documentation_url+'</a></div>';
-        	}
-        	error(msg);
-        }
-        if(xobj.status == "404") {  
-			var msg ={};
-			msg.error = 'FATAL ERROR\n'+file+' \nDOESNT EXIST';
-        	error(msg);        	
-        }
-    };
-    xobj.send('data='+btoa(JSON.stringify(post_data)));  
-}
-var load_content = function(callback,path,data){	
-	loadFile( function(response) {		
-		var tempHTML = doT.template(response);
-		var tempCONTENT = data;
-		callback(tempHTML(tempCONTENT));
-	},path,null,
-	function(msg){
-		alert('app error:content file doesnt extst');
-		console.log('msg');
-	});
-}
-
-/* on first load clear elements with section (if databese have elements to render) */
-var _clear_at_start = function(data){
-	/* hardocoded alweays clear elements-agregator */
-	//delete data['elements-agregator'];
-	//data['elements-agregator'] = {'elements':[]};
-	return data;
-}
-
-var _PROJECT = {
-	"token":null,
-	"organisation_name":null,
-	"project_name":null,
-	"published_url":null,
-	"sitemap":{
-		"urlset":{
-			"url":[],
-			"_xmlns":"http://www.sitemaps.org/schemas/sitemap/0.9"
-		}
-	},
-	// TODO parse sitemap to good XML format (json structure is 1:1 :D)
-	// https://github.com/abdmob/x2js
-	// http://www.sitemappro.com/google-sitemap.html
-	
-	"set_status": function(){
-		if(!this.organisation_name){
-			console.log('token:null');
-			load_content( function(_r) {	
-				window.location.hash = '#openModal';
-				document.getElementById('modal-title').innerHTML = "UiGEN LOGIN";
-				document.getElementById('modal-content').innerHTML = _r;
-			},'pbuilder-inc/gui-content/_PROJECT-token-null.html',{});
-
-			return false;
-		}
-		if(!this.organisation_name){
-			alert('organisation:null');
-			return false;
-		}
-		if(this.sitemap.urlset.url.length == 0){
-			alert('projects:null');
-			return false;
-		}
-		if(!this.project_name){
-			alert('selected project:null');
-			return false;
-		}
-		
-	}
-}
-
-_PROJECT.set_status();
-/*
-{"loc":"http://www.sitemappro.com/","lastmod":"2016-05-27T23:55:42+01:00","changefreq":"daily","priority":"0.5"},
-{"loc":"http://www.sitemappro.com/download.html","lastmod":"2016-05-26T17:24:27+01:00","changefreq":"daily","priority":"0.5"}
-*/
 
 
-/* boilerplate repo */
-this.boiler_repo = 'relu-org/relu-boilerplate/';
-var _PBuilder = {
-	/* PROJECTS AND PAGES */
-	'projects':{
-		
-	},
-	
-	/* TEMPLATE SECTON */
-	'boiler_repo':'', /* template source */
-	'data':{}, /* content example file */
-	'schema':{}, /* properties for html sections */
-	'properties':{}, /* global properties */	
-	/* TECH SECTON */
-	'loaded_components':{},
-	'dragobj':{},
-	'move_element':{
-		'from':{
-			'section':'section_id',
-			'index':null
-		},
-		'to':{
-			'section':'section_id',
-			'index':null
-		}
-	},
-	/* 1 INIT - load content data */
-	init: function(boiler_repo){
-		var _t = this;
-		_t.boiler_repo = boiler_repo;
-		/* Render App from file*/
-		if(localStorage.actual_landing_data){
-			//this.init_Callback(JSON.parse(localStorage.actual_landing_data));
-		}else{
-			
-			_GITHUB.get_content({
-				'repo':_t.boiler_repo,
-				'branch':'master',
-				'filter':['page'],
-			},
-			/* callback */
-			function() {
-				_t.data = JSON.parse(atob(_GITHUB.data[_t.boiler_repo]['page-content.json']));
-				_t.schema = JSON.parse(atob(_GITHUB.data[_t.boiler_repo]['page-properties.json'])).schema;
-				_t.properties = JSON.parse(atob(_GITHUB.data[_t.boiler_repo]['page-properties.json'])).properties;
-				//localStorage.actual_landing_data = _GITHUB.data[_t.boiler_repo]['page-content.json'];
-				
-				document.getElementById("page-builder").innerHTML = atob(_GITHUB.data[_t.boiler_repo]['page.html']);
-				document.getElementById("page-builder-wraper").style.display = 'block';
 
-				_t.init_Callback(JSON.parse(atob(_GITHUB.data[_t.boiler_repo]['page-content.json'])));
-			});
-		} 		
-	},
-	/* 2 INIT callback - update app object */
-	init_Callback : function(data){
-		/* build data model */
-		this.data = data;
-		this.data = _clear_at_start(data);
-
-		/* LOAD FROM GITHUB */
-		_GITHUB.get_content({
-			'repo':_PBuilder.properties['css_source'],
-			'branch':'master',
-			'filter':['abrahamlincoln'],
-			},
-			/* callback */
-			function() {
-				console.log('--LOADED DATA--');
-				var d = _GITHUB.data[_PBuilder.properties['css_source']];
-				var out = '<style>';
-				for(var index in d) { 
-					out += atob(d[index]);
-				}
-				out +='</style>';
-				document.getElementsByTagName("head")[0].innerHTML += out;
-				_PBuilder.load_components();
-		});
-	},	
-	load_components(){
-		console.log('## LOAD COMPONENTS GITHUB ##');
-		_this = this;
-		var filter = [];
-		if(this.schema){
-			for(var _i in this.schema) { 			
-				filter.push(this.schema[_i].default_component);
-			}
-		}
-		_GITHUB.get_content({
-			'repo':'relu-org/ArthurWellesleyComponents/',
-			'branch':'master',
-			'filter':filter,
-			},
-			/* callback */
-			function() {
-				var _in = _GITHUB.data['relu-org/ArthurWellesleyComponents/'];
-				for(var _i in _in) {					
-					_this.loaded_components[_i] = atob(_in[_i]);
-				}
-				console.log(_this.loaded_components);
-				_this.load_components_callback();
-		});
-	},
-	/* 3 Load components callback - RUN APP */
-	load_components_callback: function(){
-		save_local_grid();
-		/* render defaults components */
-		var to_drag_and_drop = [];
-		for (section in this.schema){			
-			/* set editable section */
-			if(this.schema[section].new){
-				out = '<div onclick="_PBuilder.add_new(this)" class="add-new-element" data-add="'+section+'">';
-				out += '<i class="material-icons">&#xE146;</i></div>';
-				document.getElementById(section).outerHTML += out;
-			}
-			/* get templates and render it */
-			var tpl_part = this.loaded_components[this.schema[section]['default_component']];	
-			var content = this.data[ this.J_kIx(section) ];
-			console.log(content);
-			if(content){
-				this.data[ this.J_kIx(section) ].elements.forEach(function (data, i) {
-			   		_PBuilder.render(data, tpl_part, section);
-				});
-			}
-			if(this.schema[section].dragdrop){
-				to_drag_and_drop.push(document.getElementById(section));
-			}
-		}	
-		console.log(to_drag_and_drop);
-		/* ------------- */
-		/* DRAG AND DROP */	
-		var min = 0;
-		this.dragobj = dragula(to_drag_and_drop
-		).on('drag', function (el) {
-			min = document.getElementById("page-builder").offsetHeight;
-			document.getElementById("page-builder").style['min-height']=min;
-			_bTrform.off();
-			_PBuilder.moved_element(el,'from');
-		}).on('drop', function (el) {
-			_bTrform.on();
-			_PBuilder.moved_element(el,'to');
-			save_local_grid();
-		});	
-	},
-
-
-	
-	render: function(data, tpl_part, target){
-		
-		console.log('render');
-		var out = '';
-
-		out += tpl_part;
-		//out += '</div>';
-		out = out.replace(/\\"/g, '"');
-		/* create data */
-
-		var tempHTML = doT.template(out);
-		var tempCONTENT = data;
-
-		var controlls='<div class="controlls">';
-		//out += '<div class="tech-wrapper">';
-		/* check is this section have delete */	
-
-		/*out += '<div class="drag"> <a href="#none"><i class="material-icons">&#xE25D;</i></a></div>';*/
-		
-		if(this.schema[target].remove){
-			controlls += '<div class="controll remove" onmousedown="event.stopPropagation()" onclick="_PBuilder.remove(this,\''+this.schema[target].remove+'\')"><a href="#none"><i class="material-icons">&#xE92B;</i></a></div>';
-		}
-		if(this.schema[target].edit_this){
-			controlls += '<div class="controll edit" onmousedown="event.stopPropagation()" onclick="_PBuilder.edit(this); return false"><a href="#openModal"><i class="material-icons">&#xE254;</i></a></div>';
-		}
-		controlls += '</div>';
-
-		/* rebuild exist element */
-		var elements = document.getElementById(target).children;
-		for( var i = 0; i<elements.length; i++){
-			if(elements[i].classList.contains('gu-transit')){
-				console.log(elements[i]);
-				elements[i].outerHTML = tempHTML(tempCONTENT);
-				document.getElementById(target).getElementsByClassName('bx')[this.move_element.to.index].innerHTML += controlls;
-				return false;
-			};
-		}
-		/* add new element */
-		document.getElementById(target).innerHTML += tempHTML(tempCONTENT);
-		document.getElementById(target).lastChild.innerHTML += controlls;
-		
-	},
-	/* ------------------------ */
-	/* drag and drop controller */
-	/* ------------------------ */
-	
-	/* create dragged element start and end point to rebuild json data base object */
-	moved_element:function(el,type){
-		this.move_element[type].section = el.parentNode.id;
-		this.move_element[type].index = this.DOM_Ix(el);
-    	if(type == 'to'){
-    		this.update_data_after_move();    		
-    	}    	
-    	return this.move_element;
-	},
-	update_data_after_move: function(){
-		/* get */
-		var valut_obj = this.data[ this.J_kIx( this.move_element.from.section) ].elements[this.move_element.from.index];
-		/* remove */
-		this.data[ this.J_kIx( this.move_element.from.section) ].elements.splice(this.move_element.from.index, 1);
-		/* add */
-		this.data[ this.J_kIx( this.move_element.to.section) ].elements.splice(this.move_element.to.index, 0, valut_obj);
-		/* --------- */
-		/* check if i should change template */
-		if(this.schema[this.move_element.to.section]['extended_default_component']){
-			var tpl_part = this.loaded_components[ this.schema[this.move_element.to.section]['default_component'] ];
-			this.render(
-				valut_obj,
-				this.loaded_components[ this.schema[this.move_element.to.section]['default_component'] ], 
-				this.move_element.to.section
-			);
-		}
-	},
-
-	/* ------------------------ */
-	/* actions */
-	/* ------------------------ */
-
-	remove: function(el,target){
-		var wraper = getClosest(el, 'section');
-		this.J_delete(wraper.parentNode.id, this.DOM_Ix( wraper ));
-		wraper.parentNode.removeChild(wraper);
-		/*save_local_grid();*/
-	},
-	'e_obj':{
-		'section':{},
-		'section_index':{},
-		'element':{},
-		'element_index':{},
-		'controls':{},
-		'data_fragment':{}
-	},
-	add_new:function(el) {
-		// this to ma byc sekcja;
-		var _t = document.getElementById(el.getAttribute("data-add"));
-		var tpl_part = _PBuilder.loaded_components[_PBuilder.schema[_t.id]['default_component']];	
-		var content = _PBuilder.data[ _PBuilder.J_kIx(_t.id) ];
-		
-		if(content){
-			document.getElementById(_t.id).innerHTML = "";
-			var new_section = new_object.concat(content.elements); 
-			new_section.forEach(function (data, i) {
-		   		_PBuilder.render(data, tpl_part, _t.id);
-			});
-			content.elements = new_section;
-		}else{
-			//alert('iam empty i chuj');
-		}
-	},	
-	edit:function(el){
-		console.log(this.data);
-		//document.getElementById('page-builder-wraper').classList.toggle('blur');
-		window.location.hash = '#openModal';
-		
-		/* todo HARDCODED FIND xestion calsss !!!!!! */
-		this.e_obj.section = getClosest(el, 'section');
-		
-		this.e_obj.section_index = this.J_kIx(this.e_obj.section.id);
-		this.e_obj.element = getClosest(el, '.bx');
-		this.e_obj.element_index = this.DOM_Ix( this.e_obj.element );
-		this.e_obj.constrols = this.e_obj.element.querySelectorAll('[data-bx]');
-		this.e_obj.data_fragment = this.data[this.e_obj.section_index].elements[this.e_obj.element_index];
-		
-		console.log(this.e_obj);
-		/* render form */
-		this.build_elem_form(this.e_obj);
-		/* TODO & WARNING - always run uploader if run edit window */
-		var myDropzone = new Dropzone("div#dropzone", { 
-			url: "pbuilder-upload.php",
-			thumbnailWidth: "400"
-		});
-
-		myDropzone.on("complete", function(file) {
-			//remove background example
-			//myDropzone.removeFile(file);
-			document.getElementById('exist-preview').style.display = 'none';
-			document.getElementById('dropzone').setAttribute("value", upload_path+file.name); 
-
-		});
-	},
-	build_elem_form: function(e_obj){
-		this.e_obj = e_obj;
-		var out = '<div id="editor-wraper" onkeypress="_PBuilder.editor_keypress(event)">';
-		for( var i = 0; i<this.e_obj.constrols.length; i++){
-
-			if(this.e_obj.constrols[i].getAttribute("data-bx") == 'title'){
-				out += '<input data-edit-controll="true" name="'+this.e_obj.constrols[i].getAttribute("data-bx")+'" value="'+this.e_obj.constrols[i].innerHTML+'" ><br>';
-			}
-			if(this.e_obj.constrols[i].getAttribute("data-bx") == 'description'){
-				out += '<textarea data-edit-controll="true" name="'+this.e_obj.constrols[i].getAttribute("data-bx")+'">'+this.e_obj.constrols[i].innerHTML+'</textarea><br>';
-			}
-			if(this.e_obj.constrols[i].getAttribute("data-bx") == 'background'){
-				out += '<div id="dropzone" data-edit-controll="true" name="'+this.e_obj.constrols[i].getAttribute("data-bx")+'" value="'+this.e_obj.data_fragment[this.e_obj.constrols[i].getAttribute("data-bx")]+'">';
-				out += 'add or edit background';
-				out += '<div id="exist-preview" style="background-image:url(\''+this.e_obj.data_fragment.background+'\')"></div>';
-				out += '</div>';
-			}
-			
-		}
-		/* parse template */
-		/*var usage_template = this.loaded_components[this.schema[section.id]['default_component']];
-		var result = usage_template.match(/{{=it.(.*?)}}/g).map(function(val){
-			alert(val);
-			return val.replace(/<\/?b>/g,'');
-		});*/
-		out += '<a id="save-content" class="button" onclick="_PBuilder.editor_save()" href="#close">Save</a>';
-		out += '</div>';
-		document.getElementById('modal-content').innerHTML = out;
-	},
-	editor_keypress: function(e){
-		if (e.keyCode == 13) {
-			this.editor_save();
-			window.location.hash = '#close';
-		}
-	},
-	editor_save:function(){
-		var edited_controlls = document.querySelectorAll('[data-edit-controll]');
-		for( var i = 0; i<edited_controlls.length; i++){
-			
-			if( edited_controlls[i].getAttribute("name")=='background'){
-				
-				var _name = edited_controlls[i].getAttribute("name");
-				var _value = edited_controlls[i].getAttribute("value");
-			
-			}else{
-				
-				var _name = edited_controlls[i].name;
-				var _value = edited_controlls[i].value;
-			
-			}
-			/* update JSON */
-			this.data[this.e_obj.section_index].elements[this.e_obj.element_index][_name] = _value;
-			/* update DOM */
-			if(document.querySelector("[data-bx="+_name+"]") != null){
-				
-				if(_name == 'background'){
-					var out = "background-image:url('"+_value+"');";
-					this.e_obj.element.querySelector("[data-bx="+_name+"]").setAttribute('style',out);
-				}else{
-					this.e_obj.element.querySelector("[data-bx="+_name+"]").innerHTML = _value;
-				}
-				
-			}
-			
-		}
-		save_local_grid();
-	},
-
-	/* ------------------------ */
-	/* tech */
-	/* ------------------------ */
-	/* get key index */
-	J_kIx: function(key, shema){
-		if(shema == undefined){
-			var obj = this.schema; 
-		}		
-		return Object.keys(obj).indexOf(key);
-	},
-	J_delete: function(section, index){
-		this.data[this.J_kIx( section)].elements.splice(index, 1);
-	},
-	DOM_Ix: function(el){
-     	return Array.prototype.indexOf.call(el.parentNode.children, el);
-	},
-
-	/* ###################################################################################### */
-	/* JSON MANIPULATIONS */
-	J_merge: function(section, data){
-
-		/* J_merge */
-		//var tech_array = data.concat(this.data[section].elements); 
-		//this.data[section].elements = tech_array;
-		
-		/* overwrite */
-		this.data[section].elements = data;
-		this.templating_data(section);
-	},
-}
 
 var save_local_grid = function(){
 	
@@ -517,47 +20,13 @@ var save_local_grid = function(){
 	document.getElementById('inspector-content').innerHTML += "\n\n##:DRAG AND DROP\n";
 	document.getElementById('inspector-content').innerHTML += str;
 }
-/* CLIMBING UP TECH FUNCTION */
-/*
-http://gomakethings.com/climbing-up-and-down-the-dom-tree-with-vanilla-javascript/
-*/
-var getClosest = function (elem, selector) {
-    var firstChar = selector.charAt(0);
-    // Get closest match
-    for ( ; elem && elem !== document; elem = elem.parentNode ) {
-        // If selector is a class
-        if ( firstChar === '.' ) {
-            if ( elem.classList.contains( selector.substr(1) ) ) {
-                return elem;
-            }
-        }
-        // If selector is an ID
-        if ( firstChar === '#' ) {
-            if ( elem.id === selector.substr(1) ) {
-                return elem;
-            }
-        } 
-        // If selector is a data attribute
-        if ( firstChar === '[' ) {
-            if ( elem.hasAttribute( selector.substr(1, selector.length - 2) ) ) {
-                return elem;
-            }
-        }
-        // If selector is a tag
-        if ( elem.tagName.toLowerCase() === selector ) {
-            return elem;
-        }
-    }
-    return false;
-};
 
 
 function gui_designers(){
 	document.getElementById('gui_zoom_button').classList.toggle('active');
 	if(document.getElementById('gui_zoom_button').classList.contains("active")){
-		_bTrform.init();
-			
-	}else{
+		_bTrform.init();			
+	}else{		
 		_bTrform.destroy();
 	}
 	window.location.href="#";
@@ -572,7 +41,6 @@ function gui_save(){
 		var data = window.btoa(JSON.stringify(_PBuilder.data));
 		var schema = window.btoa(JSON.stringify(_PBuilder.schema));
 		var properties = window.btoa(JSON.stringify(_PBuilder.properties));
-
 
 		window.location.href="#openModal";
 		out = "Generating static WebPage now...<br>Please wait...";
@@ -615,5 +83,143 @@ function gui_save(){
 	}
 }
 
+function my_tab(t) {
+    
+    var x = document.getElementsByClassName("menu-tab");
+	for (var i = 0; i < x.length; i++) {
+	    x[i].classList.remove("active");
+	}
+	t.classList.toggle('active');
+	document.getElementById('submenu').style.display = "block";
+}
+
+
+//alert(sessionStorage.access_token);
+
+//var GitHub = require('github-api');
+
+// token auth
+/*var gh = new GitHub({
+   token: 'ec8c31a2deb869c7fe407aee94b9ad39716efb1c'
+});
+
+var user = gh.getUser('dadmor');*/
+
+/*user.listRepos({}, function(err, repos) {
+	console.log('github-api.JS');
+	console.log(repos);
+	repos.forEach(function (data, i, v) {
+		console.log(data);
+	});
+});
+*/
+
+
+
+/* NEW REPO */
+/*var remoteRepo = gh.getRepo('dadmor','Hello-World');
+remoteRepo.getDetails(function(err, repo) {
+	if(repo){
+		alert('repo istnieje');
+		remoteRepo.createRef({
+			"ref": "refs/heads/featureA",
+			"sha": "aa218f56b14c9653891f9e74264a383fa43fefbd"
+		}, function(err, repo) {
+			alert('branch created');
+		});
+
+		remoteRepo.createTree({
+			"base_tree": "9fb037999f264ba9a7fc6274d15fa3ae2ab98312",
+			"tree":[
+			 {
+			      "path": "file.rb",
+			      "mode": "100644",
+			      "type": "blob",
+			      "sha": "44b4fc6d56897b048c772eb4087f854f46256132"
+			    }
+			]}, function(err, repo) {
+			alert('branch created');
+		});
+
+	}else{
+		user.createRepo({
+		  "name": "Hello-World",
+		  "description": "This is your first repository",
+		  "homepage": "https://github.com",
+		  "private": false,
+		  "has_issues": true,
+		  "has_wiki": true,
+		  "default_branch": "gh-pages", 
+		  "has_downloads": true
+		}, function(err, repos) {
+			alert('zrobiłęm repo');	
+		});
+	}
+});*/
+
+
+/* --------------------------------------------------------- */
+
+
+/*loadFile( function(response) {		
+	alert('ok');
+},
+	'https://api.github.com/repos/dadmor/page-test-7/git/blobs?access_token=ec8c31a2deb869c7fe407aee94b9ad39716efb1c', 
+{
+	
+	"content": "aGVsbG8=",
+	"encoding": "utf-8"
+    
+},
+function(msg){
+	alert('error 404');
+});*/
+
+/* --------------------------------------------------------- */
+
+/*loadFile( function(response) {		
+	alert('ok');
+},
+	'https://api.github.com/repos/dadmor/page-test-7/git/commits?access_token=ec8c31a2deb869c7fe407aee94b9ad39716efb1c', 
+{
+  "message": "my commit message",
+  "author": {
+    "name": "Scott Chacon",
+    "email": "schacon@gmail.com",
+    "date": "2008-07-09T16:13:30+12:00"
+  },
+  "parents": [
+    "7d1b31e74ee336d15cbd21741bc88a537ed063a0"
+  ],
+  "tree": "827efc6d56897b048c772eb4087f854f46256132"
+}
+,
+function(msg){
+	alert('error 404');
+});*/
+
+/* --------------------------------------------------------- */
+
+loadFile( function(response) {	
+	console.log('OK :)');
+},
+	'https://api.github.com/user/repos?access_token=ec8c31a2deb869c7fe407aee94b9ad39716efb1c', 
+{
+  "name": "Hello-World5",
+  "description": "This is your first repository",
+  "homepage": "https://github.com",
+  "private": false,
+  "has_issues": true,
+  "has_wiki": true,
+  "has_downloads": true,
+  "auto_init": true
+},
+function(msg){
+	alert('error 404');
+});
+
+
+
+	
 
 
