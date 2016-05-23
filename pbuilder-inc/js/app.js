@@ -158,66 +158,6 @@ remoteRepo.getDetails(function(err, repo) {
 });*/
 
 
-/* --------------------------------------------------------- */
-
-
-/*loadFile( function(response) {		
-	alert('ok');
-},
-	'https://api.github.com/repos/dadmor/page-test-7/git/blobs?access_token=ec8c31a2deb869c7fe407aee94b9ad39716efb1c', 
-{
-	
-	"content": "aGVsbG8=",
-	"encoding": "utf-8"
-    
-},
-function(msg){
-	alert('error 404');
-});*/
-
-/* --------------------------------------------------------- */
-
-/*loadFile( function(response) {		
-	alert('ok');
-},
-	'https://api.github.com/repos/dadmor/page-test-7/git/commits?access_token=ec8c31a2deb869c7fe407aee94b9ad39716efb1c', 
-{
-  "message": "my commit message",
-  "author": {
-    "name": "Scott Chacon",
-    "email": "schacon@gmail.com",
-    "date": "2008-07-09T16:13:30+12:00"
-  },
-  "parents": [
-    "7d1b31e74ee336d15cbd21741bc88a537ed063a0"
-  ],
-  "tree": "827efc6d56897b048c772eb4087f854f46256132"
-}
-,
-function(msg){
-	alert('error 404');
-});*/
-
-/* --------------------------------------------------------- */
-
-loadFile( function(response) {	
-	console.log('OK :)');
-},
-	'https://api.github.com/user/repos?access_token=ec8c31a2deb869c7fe407aee94b9ad39716efb1c', 
-{
-  "name": "Hello-World5",
-  "description": "This is your first repository",
-  "homepage": "https://github.com",
-  "private": false,
-  "has_issues": true,
-  "has_wiki": true,
-  "has_downloads": true,
-  "auto_init": true
-},
-function(msg){
-	alert('error 404');
-});
-
 
 
 	
