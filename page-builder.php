@@ -7,7 +7,6 @@ rel="stylesheet">
 <script type="text/javascript" src="pbuilder-inc/js/dragula.min.js"></script>
 <!-- <script type="text/javascript" src="pbuilder-inc/js/medium-editor.min.js"></script> -->
 <script type="text/javascript" src="pbuilder-inc/js/doT.min.js"></script>
-
 <script type="text/javascript" src="pbuilder-inc/js/dropzone.min.js"></script>
 
 	
@@ -27,8 +26,10 @@ rel="stylesheet">
 			<a href="https://github.com/dadmor/simple-landing-page-and-site-buider">https://github.com/dadmor/simple-landing-page-and-site-buider</a>
 		</div>
 		
-		
-		<div id="gui_zoom_button" class="main-ico" onclick="gui_designers()" style="margin-left: auto;">
+		<div id="to-right-column" style="margin-left: auto;">
+			|
+		</div>
+		<div id="gui_zoom_button" class="main-ico" onclick="gui_designers()">
 			<i class="material-icons">&#xE323;</i>
 			DESIGN MODE
 		</div>
@@ -96,7 +97,7 @@ rel="stylesheet">
 	
 </body>
 <script type="text/javascript" src="pbuilder-inc/js/_tech.js"></script>
-<script type="text/javascript" src="pbuilder-inc/js/_project.js"></script>
+<!-- <script type="text/javascript" src="pbuilder-inc/js/_project.js"></script>
 <script type="text/javascript" src="pbuilder-inc/js/_pbuilder.js"></script>
-<script type="text/javascript" src="pbuilder-inc/js/app.js"></script>
+<script type="text/javascript" src="pbuilder-inc/js/app.js"></script> -->
 

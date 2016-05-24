@@ -24,9 +24,9 @@ var _PROJECT = {
 			console.log('token:null');
 			document.getElementById('tooltip-login').style.display = "flex";	
 			load_content( function(_r) {	
-				window.location.hash = '#openModal';
-				document.getElementById('modal-title').innerHTML = "UiGEN LOGIN";
-				document.getElementById('modal-content').innerHTML = _r;
+				//window.location.hash = '#openModal';
+				//document.getElementById('modal-title').innerHTML = "UiGEN LOGIN";
+				//document.getElementById('modal-content').innerHTML = _r;
 			},'pbuilder-inc/gui-content/_PROJECT-token-null.html',{});
 			return false;
 
