@@ -102,6 +102,10 @@ body{
 	border-bottom:1px solid #272727;
 	text-transform: none;
 	letter-spacing: 0em;
+	cursor:pointer;
+}
+#submenu #add-project-tab{
+	background-color: rgb(98, 204, 99);
 }
 
 #properties{

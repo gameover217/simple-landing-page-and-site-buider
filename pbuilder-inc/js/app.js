@@ -31,7 +31,7 @@ function gui_designers(){
 	}
 	window.location.href="#";
 }
-
+/* rejeted */
 function gui_save(){
 	
 	if(Object.keys(_GITHUB.data).length == 0){
@@ -45,19 +45,22 @@ function gui_save(){
 		window.location.href="#openModal";
 		out = "Generating static WebPage now...<br>Please wait...";
 		document.getElementById('modal-content').innerHTML = out;
-		
-		loadFile( function(response) {		
+		loadFile( function(res) {	
+
+				console.log(res)	
+				
 				out = "<b>Your site was created on:</b><br/>";
 				out += "pbuilder-upload/"+window.page_slug;
 				out += "<p>Copy this link and enjoy!!</p>";
 
-				out = response;
+				out = res;
 				document.getElementById('modal-content').innerHTML = out;
-				//document.getElementById('body').innerHTML = response;
-				//localStorage.actual_landing_data = response;
-				//_this.init_Callback(JSON.parse(response));
+				
+				//document.getElementById('body').innerHTML = res;
+				//localStorage.actual_landing_data = res;
+				//_this.init_Callback(JSON.parse(res));
 		},
-		 'pbuilder-publisher/render-static.php', 
+		 'pbuilder-publisher/publish.php', 
 		{
 			"data":data,
 			"properties":properties,
@@ -67,8 +70,6 @@ function gui_save(){
 			"html":_GITHUB.data[_PBuilder.boiler_repo]['page.html']
 		},
 		function(msg){
-			console.log('msg');
-
 			var data = window.btoa(JSON.stringify(_PBuilder.data));
 			var schema = window.btoa(JSON.stringify(_PBuilder.schema));
 			var properties = window.btoa(JSON.stringify(_PBuilder.properties));
@@ -92,74 +93,5 @@ function my_tab(t) {
 	t.classList.toggle('active');
 	document.getElementById('submenu').style.display = "block";
 }
-
-
-//alert(sessionStorage.access_token);
-
-//var GitHub = require('github-api');
-
-// token auth
-/*var gh = new GitHub({
-   token: 'ec8c31a2deb869c7fe407aee94b9ad39716efb1c'
-});
-
-var user = gh.getUser('dadmor');*/
-
-/*user.listRepos({}, function(err, repos) {
-	console.log('github-api.JS');
-	console.log(repos);
-	repos.forEach(function (data, i, v) {
-		console.log(data);
-	});
-});
-*/
-
-
-
-/* NEW REPO */
-/*var remoteRepo = gh.getRepo('dadmor','Hello-World');
-remoteRepo.getDetails(function(err, repo) {
-	if(repo){
-		alert('repo istnieje');
-		remoteRepo.createRef({
-			"ref": "refs/heads/featureA",
-			"sha": "aa218f56b14c9653891f9e74264a383fa43fefbd"
-		}, function(err, repo) {
-			alert('branch created');
-		});
-
-		remoteRepo.createTree({
-			"base_tree": "9fb037999f264ba9a7fc6274d15fa3ae2ab98312",
-			"tree":[
-			 {
-			      "path": "file.rb",
-			      "mode": "100644",
-			      "type": "blob",
-			      "sha": "44b4fc6d56897b048c772eb4087f854f46256132"
-			    }
-			]}, function(err, repo) {
-			alert('branch created');
-		});
-
-	}else{
-		user.createRepo({
-		  "name": "Hello-World",
-		  "description": "This is your first repository",
-		  "homepage": "https://github.com",
-		  "private": false,
-		  "has_issues": true,
-		  "has_wiki": true,
-		  "default_branch": "gh-pages", 
-		  "has_downloads": true
-		}, function(err, repos) {
-			alert('zrobiłęm repo');	
-		});
-	}
-});*/
-
-
-
-
-	
 
 

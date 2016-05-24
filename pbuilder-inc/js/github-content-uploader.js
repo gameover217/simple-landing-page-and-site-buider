@@ -22,11 +22,10 @@ var _GITHUB = {
 			_t.preloader_init();
 			_t.move_preloader(_t.res.tree[0].path);
 			_t.load();
-		}, 'https://api.github.com/repos/'+_t.repo+'git/trees/'+prop.branch); 
+		}, 'https://api.github.com/repos/'+_t.repo+'git/trees/'+prop.branch+'?access_token='+sessionStorage.access_token); 
 	},
 
 	load: function(){
-		console.log(_t.res);
 		_t = this;
 		if(	_t.check_filter(_t.count) ){
 			loadFile( function(_r) {

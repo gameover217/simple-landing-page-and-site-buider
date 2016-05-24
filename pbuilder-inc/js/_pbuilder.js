@@ -95,7 +95,6 @@ var _PBuilder = {
 				for(var _i in _in) {					
 					_this.loaded_components[_i] = atob(_in[_i]);
 				}
-				console.log(_this.loaded_components);
 				_this.load_components_callback();
 		});
 	},
@@ -114,7 +113,6 @@ var _PBuilder = {
 			/* get templates and render it */
 			var tpl_part = this.loaded_components[this.schema[section]['default_component']];	
 			var content = this.data[ this.J_kIx(section) ];
-			console.log(content);
 			if(content){
 				this.data[ this.J_kIx(section) ].elements.forEach(function (data, i) {
 			   		_PBuilder.render(data, tpl_part, section);
@@ -124,7 +122,6 @@ var _PBuilder = {
 				to_drag_and_drop.push(document.getElementById(section));
 			}
 		}	
-		console.log(to_drag_and_drop);
 		/* ------------- */
 		/* DRAG AND DROP */	
 		var min = 0;
@@ -174,7 +171,6 @@ var _PBuilder = {
 		var elements = document.getElementById(target).children;
 		for( var i = 0; i<elements.length; i++){
 			if(elements[i].classList.contains('gu-transit')){
-				console.log(elements[i]);
 				elements[i].outerHTML = tempHTML(tempCONTENT);
 				document.getElementById(target).getElementsByClassName('bx')[this.move_element.to.index].innerHTML += controlls;
 				return false;
@@ -253,7 +249,6 @@ var _PBuilder = {
 		}
 	},	
 	edit:function(el){
-		console.log(this.data);
 		//document.getElementById('page-builder-wraper').classList.toggle('blur');
 		window.location.hash = '#openModal';
 		
@@ -266,7 +261,6 @@ var _PBuilder = {
 		this.e_obj.constrols = this.e_obj.element.querySelectorAll('[data-bx]');
 		this.e_obj.data_fragment = this.data[this.e_obj.section_index].elements[this.e_obj.element_index];
 		
-		console.log(this.e_obj);
 		/* render form */
 		this.build_elem_form(this.e_obj);
 		/* TODO & WARNING - always run uploader if run edit window */

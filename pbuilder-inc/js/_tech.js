@@ -16,24 +16,27 @@ var new_object = [{
 	"linktarget": "html://google.com"
 }];
 
-var loadFile = function (callback, file, post_data, error) {
+var loadFile = function (callback, file, post_data, error, method) {
     var xobj = new XMLHttpRequest();
     //xobj.overrideMimeType("application/json");
     if(post_data){
-		xobj.open('POST', file, true); 
-		xobj.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+        if(method){
+            xobj.open(method, file, true); 
+            xobj.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+        }else{
+            xobj.open('POST', file, true); 
+            xobj.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+        }
     }else{
     	xobj.open('GET', file, true); 
     }
     xobj.onreadystatechange = function () {
         
         if (xobj.readyState == 4 && xobj.status == "200") {
-            console.log('jedzie callback');
             callback(xobj.responseText);
             return true;
         }
         if (xobj.readyState == 4 && xobj.status == "201") {
-            console.log('jedzie callback');
             callback(xobj.responseText);
             return true;
         }
@@ -65,8 +68,7 @@ var load_content = function(callback,path,data){
 		callback(tempHTML(tempCONTENT));
 	},path,null,
 	function(msg){
-		alert('app error:content file doesnt extst');
-		console.log('msg');
+		alert('app error [_tech.js]:content file doesnt extst');
 	});
 }
 

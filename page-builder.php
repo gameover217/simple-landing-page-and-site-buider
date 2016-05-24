@@ -33,7 +33,7 @@ rel="stylesheet">
 			<i class="material-icons">&#xE323;</i>
 			DESIGN MODE
 		</div>
-		<div class="main-ico" onclick="gui_save()">
+		<div class="main-ico" onclick="_PROJECT.project_update()">
 			<i class="material-icons">&#xE2C0;</i>
 			SAVE PAGE
 		</div>
@@ -75,9 +75,7 @@ rel="stylesheet">
 	</div>
 
 	<div id="submenu">
-		<div id="login-tab" class="menu-tab">
-			<i class="material-icons">&#xE89C;</i> add new project
-		</div>
+		
 	</div>
 
 	<!-- PAGEBUILDER -->
@@ -97,7 +95,7 @@ rel="stylesheet">
 	
 </body>
 <script type="text/javascript" src="pbuilder-inc/js/_tech.js"></script>
-<!-- <script type="text/javascript" src="pbuilder-inc/js/_project.js"></script>
+<script type="text/javascript" src="pbuilder-inc/js/_project.js"></script>
 <script type="text/javascript" src="pbuilder-inc/js/_pbuilder.js"></script>
-<script type="text/javascript" src="pbuilder-inc/js/app.js"></script> -->
+<script type="text/javascript" src="pbuilder-inc/js/app.js"></script> 
 
