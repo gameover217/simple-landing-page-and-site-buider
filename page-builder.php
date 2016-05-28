@@ -20,7 +20,7 @@ rel="stylesheet">
 		<div style="flex:0 0 11.6%">
 			<img src="pbuilder-inc/img/UiGEN-logo.svg" width="115" height="36" style="margin:0.5em"/>
 		</div>	
-		<div>
+		<div id="header-description">
 			<h1>UiGEN.org page buider</h1>
 			<h2>Ultra light static websites crator</h2>
 			<a href="https://github.com/dadmor/simple-landing-page-and-site-buider">https://github.com/dadmor/simple-landing-page-and-site-buider</a>
@@ -40,9 +40,9 @@ rel="stylesheet">
 		
 	</div>
 	<!-- LEFTBAR -->
-	<div id="templates">
+	<div id="contextmenu">
 
-		<div id="login-tab" class="menu-tab">
+<!-- 		<div id="login-tab" class="menu-tab">
 			<a href="http://uigen.org/Otto-von-Bismarck?remote"> <i class="material-icons">&#xE913;</i> login</a>
 			<div id="tooltip-login" class="tooltip">
 				<div class="tooltip-arrow"></div>
@@ -60,18 +60,22 @@ rel="stylesheet">
 			<i class="material-icons">&#xE24D;</i> Pages
 			<div id="tooltip-pages" class="tooltip">
 				<div class="tooltip-arrow"></div>
-				<div class="tooltip-content">Create home page</div>
+				<div class="tooltip-content">Home page was created</div>
 			</div>
 		</div>
 		<div id="templates-tab" class="menu-tab" onclick="my_tab(this);">
 			<i class="material-icons">&#xE8F1;</i> Templates
+			<div id="tooltip-template" class="tooltip">
+				<div class="tooltip-arrow"></div>
+				<div class="tooltip-content">Choose page template</div>
+			</div>
 		</div>
 		<i class="material-icons">&#xE8F1;</i>
 		<ul>
 			<li onclick="_PBuilder.init('relu-org/relu-boilerplate/')">1</li>
 			<li>2</li>
 			<li>3</li>
-		</ul>
+		</ul> -->
 	</div>
 
 	<div id="submenu">
@@ -95,7 +99,15 @@ rel="stylesheet">
 	
 </body>
 <script type="text/javascript" src="pbuilder-inc/js/_tech.js"></script>
-<script type="text/javascript" src="pbuilder-inc/js/_project.js"></script>
+<script type="text/javascript" src="pbuilder-inc/js/github-content-uploader.js"></script> 
+
+<script type="text/javascript" src="pbuilder-inc/js/uigen_user.js"></script>
+<script type="text/javascript" src="pbuilder-inc/js/uigen_project.js"></script>
+<script type="text/javascript" src="pbuilder-inc/js/uigen_page.js"></script>
+<script type="text/javascript" src="pbuilder-inc/js/_context-menu.js"></script> 
+
+<!-- <script type="text/javascript" src="pbuilder-inc/js/uigen_page.js"></script> -->
+
 <script type="text/javascript" src="pbuilder-inc/js/_pbuilder.js"></script>
 <script type="text/javascript" src="pbuilder-inc/js/app.js"></script> 
 

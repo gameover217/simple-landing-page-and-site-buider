@@ -1,0 +1,12 @@
+<div id="add-project-tab" class="menu-tab" onclick="new_project_show_modal()">
+	<i class="material-icons">&#xE147;</i> 
+	add new project
+</div>
+{{~it.list :value:index}}
+	{{? it.branch === value.default_branch}}
+	<div class="menu-tab" onclick="get_project('{{=value.full_name}}')">
+		<i class="material-icons">&#xE88A;</i> 
+		{{=value.full_name}}
+	</div>
+	{{?}}
+{{~}}

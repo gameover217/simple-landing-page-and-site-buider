@@ -43,7 +43,7 @@ var _PBuilder = {
 				_t.properties = JSON.parse(atob(_GITHUB.data[_t.boiler_repo]['page-properties.json'])).properties;
 				//localStorage.actual_landing_data = _GITHUB.data[_t.boiler_repo]['page-content.json'];
 				
-				document.getElementById("page-builder").innerHTML = atob(_GITHUB.data[_t.boiler_repo]['page.html']);
+				_DOM['pg-builder'].innerHTML = atob(_GITHUB.data[_t.boiler_repo]['page.html']);
 				document.getElementById("page-builder-wraper").style.display = 'block';
 
 				_t.init_Callback(JSON.parse(atob(_GITHUB.data[_t.boiler_repo]['page-content.json'])));
@@ -127,8 +127,8 @@ var _PBuilder = {
 		var min = 0;
 		this.dragobj = dragula(to_drag_and_drop
 		).on('drag', function (el) {
-			min = document.getElementById("page-builder").offsetHeight;
-			document.getElementById("page-builder").style['min-height']=min;
+			min = _DOM['pg-builder'].offsetHeight;
+			_DOM['pg-builder'].style['min-height']=min;
 			_bTrform.off();
 			_PBuilder.moved_element(el,'from');
 		}).on('drop', function (el) {
@@ -272,8 +272,8 @@ var _PBuilder = {
 		myDropzone.on("complete", function(file) {
 			//remove background example
 			//myDropzone.removeFile(file);
-			document.getElementById('exist-preview').style.display = 'none';
-			document.getElementById('dropzone').setAttribute("value", upload_path+file.name); 
+			_DOM['ex-prev'].style.display = 'none';
+			_DOM['drop-z'].setAttribute("value", upload_path+file.name); 
 
 		});
 	},
@@ -304,7 +304,7 @@ var _PBuilder = {
 		});*/
 		out += '<a id="save-content" class="button" onclick="_PBuilder.editor_save()" href="#close">Save</a>';
 		out += '</div>';
-		document.getElementById('modal-content').innerHTML = out;
+		_DOM['modal-ctnt'].innerHTML = out;
 	},
 	editor_keypress: function(e){
 		if (e.keyCode == 13) {

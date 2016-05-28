@@ -1,0 +1,5 @@
+<div id="{{=it.id}}" class="menu-tab" {{? it.onclick_callback }} onmousedown="_CX_MENU.callback(this)" {{?}}>
+	{{? it.href }} <a href="{{=it.href}}"> {{?}}
+		<i class="material-icons">{{=it.ico}}</i> {{=it.name}}
+	{{? it.href }} </a> {{?}}
+</div>

@@ -9,7 +9,8 @@ var _GITHUB = {
 	preloader_length: 1,
 	preloader_bar_id: 'preloader-bar',
 
-	get_content: function(prop, done){
+	/* -- LOAD blobs to localJSON ---------------- */
+	get_content: function(prop,  done){
 		_t = this;
 		_t.done = done;
 		_t.repo = prop.repo;
@@ -19,16 +20,17 @@ var _GITHUB = {
 		}
 		loadFile( function(_r) {
 			_t.res = JSON.parse(_r);
-			_t.preloader_init();
+			_t.preloader_init('tree');
 			_t.move_preloader(_t.res.tree[0].path);
 			_t.load();
-		}, 'https://api.github.com/repos/'+_t.repo+'git/trees/'+prop.branch+'?access_token='+sessionStorage.access_token); 
+		}, 'https://api.github.com/repos/'+_t.repo+'git/trees/'+prop.branch+'?recursive=1&access_token='+prop.token); 
 	},
 
 	load: function(){
 		_t = this;
 		if(	_t.check_filter(_t.count) ){
 			loadFile( function(_r) {
+				console.log(_t.res.tree[_t.count].url);
 				if(!_t.data[_t.repo]){
 					_t.data[_t.repo] = {};
 				}
@@ -47,9 +49,7 @@ var _GITHUB = {
 		if(_t.count != _t.res.tree.length){
 			_t.load();
 		}else{
-			_t.count = 0;
-			_t.preloader_count = 0;
-			document.getElementById(this.preloader_bar_id).style.opacity = '0';
+			
 			_t.done();
 		}
 	},
@@ -70,13 +70,88 @@ var _GITHUB = {
 		return _g;
 	},
 
-	preloader_init:function(){
-		document.getElementById(this.preloader_bar_id).setAttribute("style", "opacity:1; width:0%"); 
-		for(var _i in this.res.tree) { 
-			if(this.check_filter(_i)){
-				this.preloader_length++;
-			}
+	/* -- LOAD user ---------------- */
+	get_user:function(_tkn,success){
+		_GITHUB.preloader_init(1);
+		loadFile( function(res) {
+				_GITHUB.move_preloader('login user');	
+				success(res);
+			},'https://api.github.com/user?access_token='+_tkn,null,
+			function(msg){
+				alert('Error https://api.github.com/user');
+				consile.log(msg);
+			});
+	},
+	/* -- LOAD repos list ---------- */
+	get_repos:function(_tkn,success){
+		_GITHUB.preloader_init(1);
+		loadFile( function(res) {
+				_GITHUB.move_preloader('get projects list');	
+				success(res);
+			},'https://api.github.com/user/repos?access_token='+_tkn,null,
+			function(msg){
+				alert('Error https://api.github.com/user/repos');
+				consile.log(msg);
+			});
+	},
+	/* -- CREATE repo -------------- */
+	create_repo:function(_tkn,data,success){
+		_GITHUB.preloader_init(1);
+		loadFile( function(res) {	
+			_GITHUB.move_preloader('get projects list');	
+			success(res);
+		},
+		'https://api.github.com/user/repos?access_token='+_tkn, data,
+		function(msg){
+			alert('error 404');
+		});
+	},
+	/* ------------------------------ */
+	// [{'name','blob'}]
+	create_files: function(token, user_name, repo, filesArray){
+		this.count = 0;
+		this.create_next_file(token, user_name, repo, filesArray);
+
+	},
+	create_next_file: function(token, user_name, repo, filesArray){
+/*		var token = token;
+		var repo = repo;
+		var filesArray = filesArray;*/
+		if(filesArray.length > this.count){			
+			loadFile( function(response) {		
+					//console.log('file');					
+					_GITHUB.count++;
+					_GITHUB.create_next_file(token, user_name, repo, filesArray);					
+			},
+				'https://api.github.com/repos/'+user_name+'/'+repo+'/contents/'+filesArray[this.count].file_name+'?ref='+_PROJECT.crnt_pub_branch+'&access_token='+token, 
+			{ 
+				"message": "add UiGEN file:"+filesArray[this.count].file_name,
+				"path": filesArray[this.count].file_name,
+				"content": window.btoa(filesArray[this.count].content),
+				"branch": _PROJECT.crnt_pub_branch
+			},
+			function(msg){
+				alert('error 404');
+			},"PUT");
+		}else{
+			console.log('files created');
+			return true;
 		}
+	},
+	/* ------------------------------ */
+	preloader_init:function(type){
+		this.count,this.preloader_count = 0;
+		document.getElementById(this.preloader_bar_id).setAttribute("style", "opacity:1; width:8%");
+		document.getElementById(this.preloader_bar_id).innerHTML = "Loader init...";  
+		if(type == 'tree'){
+			for(var _i in this.res.tree) { 
+				if(this.check_filter(_i)){
+					this.preloader_length++;
+				}
+			}
+			return true;
+		}
+		this.preloader_length = type;
 	},
 
 	move_preloader: function(content){
@@ -84,5 +159,10 @@ var _GITHUB = {
 		var percentage = (this.preloader_count/this.preloader_length)*100;
 		document.getElementById(this.preloader_bar_id).style.width = percentage+'%';
 		document.getElementById(this.preloader_bar_id).innerHTML = ""+parseInt(percentage)+"% "+content; 
-	}
+		if(percentage >= 100){
+			document.getElementById(this.preloader_bar_id).style.opacity = '0';
+		}
+	},
+
+
 }
