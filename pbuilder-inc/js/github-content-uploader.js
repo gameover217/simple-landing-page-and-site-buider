@@ -9,8 +9,7 @@ var _GITHUB = {
 	preloader_length: 1,
 	preloader_bar_id: 'preloader-bar',
 
-	/* -- LOAD blobs to localJSON ---------------- */
-	get_content: function(prop,  done){
+	get_content: function(prop, done){
 		_t = this;
 		_t.done = done;
 		_t.repo = prop.repo;
@@ -23,14 +22,14 @@ var _GITHUB = {
 			_t.preloader_init('tree');
 			_t.move_preloader(_t.res.tree[0].path);
 			_t.load();
-		}, 'https://api.github.com/repos/'+_t.repo+'git/trees/'+prop.branch+'?recursive=1&access_token='+prop.token); 
+		}, 'https://api.github.com/repos/'+_t.repo+'git/trees/'+prop.branch); 
 	},
 
 	load: function(){
+		console.log(_t.res);
 		_t = this;
 		if(	_t.check_filter(_t.count) ){
 			loadFile( function(_r) {
-				console.log(_t.res.tree[_t.count].url);
 				if(!_t.data[_t.repo]){
 					_t.data[_t.repo] = {};
 				}
@@ -49,7 +48,9 @@ var _GITHUB = {
 		if(_t.count != _t.res.tree.length){
 			_t.load();
 		}else{
-			
+			_t.count = 0;
+			_t.preloader_count = 0;
+			document.getElementById(this.preloader_bar_id).style.opacity = '0';
 			_t.done();
 		}
 	},
@@ -70,7 +71,8 @@ var _GITHUB = {
 		return _g;
 	},
 
-	/* -- LOAD user ---------------- */
+
+		/* -- LOAD user ---------------- */
 	get_user:function(_tkn,success){
 		_GITHUB.preloader_init(1);
 		loadFile( function(res) {
@@ -138,6 +140,7 @@ var _GITHUB = {
 			return true;
 		}
 	},
+
 	/* ------------------------------ */
 	preloader_init:function(type){
 		this.count,this.preloader_count = 0;
@@ -162,7 +165,5 @@ var _GITHUB = {
 		if(percentage >= 100){
 			document.getElementById(this.preloader_bar_id).style.opacity = '0';
 		}
-	},
-
-
+	}
 }

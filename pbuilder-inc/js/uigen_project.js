@@ -4,7 +4,8 @@ var _PROJECT = {
 	"crnt_name":null,
 	"crnt_pub_branch":"gh-pages",
 	
-	get: function(repo){
+	get: function(repo, success){
+		var _s = success;
 		this.crnt_name = repo;
 		_GITHUB.get_content({
 			'token':_USER.token,
@@ -13,15 +14,19 @@ var _PROJECT = {
 			'filter':undefined,
 		},
 		function() {			
-			if( !_GITHUB.data[_PROJECT.crnt_name+'/']['.uigen/init.txt'] ){
-				alert('Critical error: I dont have init file');
+			if( !_GITHUB.data[_PROJECT.crnt_name+'/']['init.txt'] ){
+				console.log('Critical error: I dont have init file');
 				return false;
 			}
 			if( !_GITHUB.data[_PROJECT.crnt_name+'/']['index.html'] ){
-				alert('I dont have index');
+				console.log('I dont have index');
 				return false;
 			}
-			console.log(_GITHUB.data);
+			if( _GITHUB.data[_PROJECT.crnt_name+'/']['site-map.json'] ){
+				console.log('-site map exist-');
+				_s(JSON.parse(window.atob(_GITHUB.data[_PROJECT.crnt_name+'/']['site-map.json'])));
+				return true;
+			}
 		});
 	},
 	get_list: function(token, success){

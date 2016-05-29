@@ -17,6 +17,12 @@ var _DOM = {
 function gID(id){
 	return document.getElementById(id);
 }
+/* -----------------------------------------*/
+
+var templates = [{
+	"name":"RELU Person",
+	"repo":"relu-org/relu-boilerplate/"
+}]
 
 /* -----------------------------------------*/
 /* user autologin */
@@ -71,10 +77,10 @@ _CX_MENU.register_menu(
 	}
 );
 /* Example contstruction with callback-listener for Agent */
-var project_get_list_callback;
+var menu_projects_callback;
 var _cx_menu_projects = function(data){
 	if(_USER.current){		
-		_PROJECT.get_list(_USER.token, project_get_list_callback = function(res){
+		_PROJECT.get_list(_USER.token, menu_projects_callback = function(res){
 			//_AGENT.store_callback('project_get_list_callback');
 			load_content( function(_r) {	
 				_DOM['sub-mnu'].innerHTML = _r;
@@ -88,9 +94,12 @@ var _cx_menu_projects = function(data){
 	}
 }
 
+var get_project_callback;
 var get_project = function(repo){
 	_CX_MENU.close();
-	_PROJECT.get(repo);
+	_PROJECT.get(repo,get_project_callback = function(res){
+		_PAGE.site_map = res;
+	});
 }
 
 var new_project_show_modal = function(){
@@ -100,16 +109,21 @@ var new_project_show_modal = function(){
 	},'pbuilder-inc/gui-content/project-add-modal.html',{"m_title":"Name your new project"});
 }
 
-var project_create_callback;
+var new_project_run_callback;
 var new_project_run = function(_t){
-	_PROJECT.create(_USER.token, _t.previousSibling.value, project_create_callback = function(res){
+	_PROJECT.create(_USER.token, _t.previousSibling.value, new_project_run = function(res){
 		console.log('project created');
 		console.log(res);
+		_PAGE.site_map = [{"url":"index.html"}];
 		_PAGE.create(_USER.token, _USER.current.login, _PROJECT.crnt_name, [
-			{"file_name":"init.txt","content":"UiGEN:true"},
 			{"file_name":"index.html","content":"UiGEN index empty file"},
-			{"file_name":".uigen/index\/properties.json","content":"{}"},
-			{"file_name":"site-visual.css","content":"/* UiGEN visual empty css file*/"}
+			{"file_name":"site-map.json","content":JSON.stringify(_PAGE.site_map)},
+			{"file_name":"init.txt","content":"UiGEN:true"},
+			//{"file_name":"index/page-properties.json","content":"{}"},
+			//{"file_name":"index/page-content.json","content":"{}"},
+			//{"file_name":"index/page-structure.css","content":"/* UiGEN structure empty css file*/"},
+			//{"file_name":"index/page-dimensions.css","content":"/* UiGEN dimensions empty css file*/"},
+			//{"file_name":"index/page-visual.css","content":"/* UiGEN visual empty css file*/"}
 		]);
 	});
 }
@@ -125,8 +139,24 @@ _CX_MENU.register_menu(
 		"submenu":true /* bolean */
 	}
 );
+var menu_pages_callback;
 var _cx_menu_pages = function(data){
-	console.log(data);
+	if(_USER.current){	
+		load_content( function(_r) {	
+			_DOM['sub-mnu'].innerHTML = _r;
+		},
+		'pbuilder-inc/gui-content/page-list.html',
+		{
+			"list": _PAGE.site_map,
+		});
+	}
+}
+
+var get_page_callback;
+var get_page = function(name){
+	_CX_MENU.close();
+	_PAGE.set_page(name);
+	document.getElementById('page-builder-wraper').style.display = 'block';
 }
 
 /* -----------------------------------------*/
@@ -141,7 +171,21 @@ _CX_MENU.register_menu(
 	}
 );
 var _cx_menu_tpl = function(data){
-	console.log(data);
+	if(_USER.current){	
+		load_content( function(_r) {	
+			_DOM['sub-mnu'].innerHTML = _r;
+		},
+		'pbuilder-inc/gui-content/template-list.html',
+		{
+			"list": templates,
+		});
+	}
+}
+
+var get_template_callback;
+var get_template = function(name){
+	_CX_MENU.close();
+	_PBuilder.init(name);
 }
 /* -----------------------------------------*/
 

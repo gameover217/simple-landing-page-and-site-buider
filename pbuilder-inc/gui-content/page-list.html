@@ -1,0 +1,12 @@
+<div id="add-project-tab" class="menu-tab" onclick="new_page_show_modal()">
+	<i class="material-icons">&#xE147;</i> 
+	add new page
+</div>
+{{~it.list :value:index}}
+	
+	<div class="menu-tab" onclick="get_page('{{=value.url}}')">
+		<i class="material-icons">&#xE24D;</i> 
+		{{=value.url}}
+	</div>
+	
+{{~}}
