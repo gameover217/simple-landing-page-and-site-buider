@@ -5,17 +5,18 @@ body{
 }
 
 #main-header{
-	position:fixed;
-	top:0;
-	width:99%;
-	height:40px;
-	background-color:#333; margin:0;
+	position: fixed;
+	top: 0px;
+	width: 100%;
+	height: 40px;
+	background-color: #333;
+	margin: 0px;
 	font-family: sans;
-	padding:0.5%;
-	color:#aaa;
-	font-size:0.4em;
-	z-index:200;
-	display:flex;
+	padding: 5px 0px;
+	color: #AAA;
+	font-size: 0.4em;
+	z-index: 200;
+	display: flex;
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
@@ -80,19 +81,18 @@ body{
 
 #submenu{
 	font-family: sans;
-	font-size:0.6em;
-	line-height:0.8em;
-	position:fixed;
-	height:100%;
-	width:18%;
-	top:3em;
-	left:12%;
-	background-color: #27759C;
-	padding:3em 0;
-	border-left:1px solid #27759C;
-	border-right:3px solid rgba(0,0,0,0.2);
-	color:#000;
-	z-index:100;
+	font-size: 0.6em;
+	line-height: 0.8em;
+	position: fixed;
+	height: 100%;
+	width: 18%;
+	top: 50px;
+	left: 12%;
+	background-color: #27759C;	
+	border-left: 1px solid #27759C;
+	border-right: 3px solid rgba(0, 0, 0, 0.2);
+	color: #000;
+	z-index: 100;
 	display:none;
 }
 #submenu a{
@@ -104,8 +104,24 @@ body{
 	letter-spacing: 0em;
 	cursor:pointer;
 }
+#submenu .menu-tab.active{
+	cursor:default;
+	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAALElEQVQImWNQL53zHxn7zNz/nwFdQL10DkIQJgAXRBZQL53znwFdQL10zn8AqlQ5fEQEQogAAAAASUVORK5CYII=)
+	font-weight: bold;
+	color: rgb(255, 255, 255);
+	text-shadow: 0px 0px 2px rgb(0, 0, 0);
+}
 #submenu #add-project-tab{
 	background-color: rgb(98, 204, 99);
+}
+#submenu h3{
+	padding:0 1em; 
+	font-weight:300; 
+	color:#000;
+	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAJ0lEQVQImV3IsQ0AMAgEMfZf7MdymqAQTrrGBWRMbVjYpfHBxR+IA8RkYFXPLhWwAAAAAElFTkSuQmCC);
+	margin: 0px;
+	padding: 1em;
+	border-bottom:1px solid #7C8432;
 }
 
 #properties{
@@ -213,7 +229,6 @@ section:hover{
 #editor-wraper textarea{
 	height:8em;
 }
-
 .main-ico{
 	-webkit-user-select: none;
 	-moz-user-select: none;
@@ -225,13 +240,13 @@ section:hover{
 	padding:0.6em 1em;
 	float:right;
 	color:#aaa;
+	font-size: 1.5em;
 }
-.main-ico:hover{
+#main-header > .main-ico:hover{
 	color:#fff;
 }
 .material-icons{
 	vertical-align: middle;
-
 }
 .menu-tab{
 	font-size:12px;
@@ -361,7 +376,7 @@ section:hover{
 	right: 0;
 	bottom: 0;
 	left: 0;
-	background: rgba(255, 255, 255, 0.9);
+	background: rgba(255, 255, 255, 0.6);
 	z-index: 200;
 	opacity:0;
 	pointer-events: none;
@@ -378,11 +393,11 @@ section:hover{
     pointer-events: auto;
 }
 .modalDialog > div {
-    width: 70%;
-    position: relative;
-    margin: 7% auto;
-    padding: 20px 40px 25px 40px; 
-    box-shadow: 0px 0px 5px #C0C0C0;  
+    width: 82%;
+	position: relative;
+	margin: 52px 0% 0% 12%;
+	padding: 20px 40px 25px;
+	box-shadow: 0px 0px 5px #C0C0C0;
 	   
 	background: rgba(255,255,255,1);
 	background: -moz-linear-gradient(-45deg, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
@@ -409,20 +424,20 @@ section:hover{
 	filter: blur(5px);
 }
 .close {
-    background-color: #fff;
-    color: #222;
-    line-height: 25px;
-    position: absolute;
-    right: -2px;
-    text-align: center;
-    top: -2px;
-    width: 24px;
-    text-decoration: none;
-    font-weight: bold;
-   
-    -moz-box-shadow: 1px 1px 3px #000;
-    -webkit-box-shadow: 1px 1px 3px #000;
-    box-shadow: 1px 1px 3px #000;
+	background-color: #FFF;
+	color: #222;
+	line-height: 29px;
+	position: absolute;
+	right: 2px;
+	text-align: center;
+	top: 0px;
+	width: 28px;
+	text-decoration: none;
+	box-shadow: 0px 0px 2px #000;
+	font-size: 2em;
+    -moz-box-shadow: 0px 0px 2px #000;
+    -webkit-box-shadow: 0px 0px 2px #000;
+
 }
 .close:hover {
     background: #00d9ff;

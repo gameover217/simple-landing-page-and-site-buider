@@ -15,7 +15,7 @@ var _PROJECT = {
 		},
 		function() {			
 			if( !_GITHUB.data[_PROJECT.crnt_name+'/']['init.txt'] ){
-				console.log('Critical error: I dont have init file');
+				alert('Critical error: I dont find init file.\nThis is not UiGEN repo or crasched repo');
 				return false;
 			}
 			if( !_GITHUB.data[_PROJECT.crnt_name+'/']['index.html'] ){
@@ -38,14 +38,16 @@ var _PROJECT = {
 	},
 	create: function(token, name, success){
 		var _s = success;
+		name.replace(/ /g,'-');
+        name.replace(/[^\w-]+/g,'');
 		/* TODO - add generic form system !!!!!!! */
-		this.crnt_name = name;
 		_GITHUB.create_repo(token, {
-			"name": this.crnt_name,
+			"name": name,
 			"description": "Static website from UiGEN.org",
 			"homepage": "http://uigen.org",
 			"private": false,
 		},function(success){
+			_PROJECT.crnt_name = JSON.parse(success).full_name;
 			_s(JSON.parse(success));
 		});
 	},

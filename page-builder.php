@@ -1,3 +1,4 @@
+<style id="uigen-style"></style>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
 rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="pbuilder-inc/css/dragula.min.css">
@@ -33,9 +34,9 @@ rel="stylesheet">
 			<i class="material-icons">&#xE323;</i>
 			DESIGN MODE
 		</div>
-		<div class="main-ico" onclick="_PROJECT.project_update()">
+		<div style="color:rgb(139, 242, 133)" class="main-ico" onclick="published()">
 			<i class="material-icons">&#xE2C0;</i>
-			SAVE PAGE
+			PUBLISH PROJECT
 		</div>
 		
 	</div>

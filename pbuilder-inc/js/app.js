@@ -12,17 +12,24 @@ var _DOM = {
 	"sub-mnu": gID('submenu'),
 	"pg-builder": gID("page-builder"),
 	"ex-prev": gID('exist-preview'),
-	"drop-z": gID('dropzone')
+	"drop-z": gID('dropzone'),
+	"hed-dsc": gID('header-description'), 
 }
 function gID(id){
 	return document.getElementById(id);
 }
 /* -----------------------------------------*/
 
-var templates = [{
+var templates = [
+{
 	"name":"RELU Person",
 	"repo":"relu-org/relu-boilerplate/"
-}]
+},
+{
+	"name":"Karl Marks",
+	"repo":"UiGENpages/karlmarks-boilerplate/"
+},
+]
 
 /* -----------------------------------------*/
 /* user autologin */
@@ -30,7 +37,6 @@ _USER.login(
 	/* success */
 	function(res){
 		//alert('user login !!!');
-		console.log(res);
 	},
 	/* fail */
 	function(){
@@ -98,7 +104,15 @@ var get_project_callback;
 var get_project = function(repo){
 	_CX_MENU.close();
 	_PROJECT.get(repo,get_project_callback = function(res){
+		_PROJECT.crnt_name = repo;
 		_PAGE.site_map = res;
+		load_content( function(_r) {	
+			_DOM['hed-dsc'].innerHTML = _r;
+		},
+		'pbuilder-inc/gui-content/project-breadcrumb.html',
+		{
+			"project": _PROJECT.crnt_name,
+		});
 	});
 }
 
@@ -112,18 +126,12 @@ var new_project_show_modal = function(){
 var new_project_run_callback;
 var new_project_run = function(_t){
 	_PROJECT.create(_USER.token, _t.previousSibling.value, new_project_run = function(res){
-		console.log('project created');
-		console.log(res);
+		console.log('app:project created');
 		_PAGE.site_map = [{"url":"index.html"}];
-		_PAGE.create(_USER.token, _USER.current.login, _PROJECT.crnt_name, [
-			{"file_name":"index.html","content":"UiGEN index empty file"},
-			{"file_name":"site-map.json","content":JSON.stringify(_PAGE.site_map)},
-			{"file_name":"init.txt","content":"UiGEN:true"},
-			//{"file_name":"index/page-properties.json","content":"{}"},
-			//{"file_name":"index/page-content.json","content":"{}"},
-			//{"file_name":"index/page-structure.css","content":"/* UiGEN structure empty css file*/"},
-			//{"file_name":"index/page-dimensions.css","content":"/* UiGEN dimensions empty css file*/"},
-			//{"file_name":"index/page-visual.css","content":"/* UiGEN visual empty css file*/"}
+		_PAGE.create(_USER.token, _PROJECT.crnt_name, [
+			{"file_name":"index.html","content":window.btoa("UiGEN index empty file")},
+			{"file_name":"site-map.json","content":window.btoa(JSON.stringify(_PAGE.site_map))},
+			{"file_name":"init.txt","content":window.btoa("UiGEN:true")}
 		]);
 	});
 }
@@ -148,6 +156,7 @@ var _cx_menu_pages = function(data){
 		'pbuilder-inc/gui-content/page-list.html',
 		{
 			"list": _PAGE.site_map,
+			"project": _PROJECT.crnt_name
 		});
 	}
 }
@@ -155,8 +164,17 @@ var _cx_menu_pages = function(data){
 var get_page_callback;
 var get_page = function(name){
 	_CX_MENU.close();
-	_PAGE.set_page(name);
+	_PAGE.crnt_name = name;
+	load_content( function(_r) {	
+		_DOM['hed-dsc'].innerHTML = _r;
+	},
+	'pbuilder-inc/gui-content/project-breadcrumb.html',
+	{
+		"project": _PROJECT.crnt_name,
+		"page": _PAGE.crnt_name
+	});
 	document.getElementById('page-builder-wraper').style.display = 'block';
+
 }
 
 /* -----------------------------------------*/
@@ -189,7 +207,36 @@ var get_template = function(name){
 }
 /* -----------------------------------------*/
 
-
+var published = function(){
+	if( (_PROJECT.crnt_name) && (_PAGE.crnt_name) && (_PBuilder.boiler_repo))
+	{
+		var data = window.btoa(JSON.stringify(_PBuilder.data));
+		var schema = window.btoa(JSON.stringify(_PBuilder.schema));
+		var properties = window.btoa(JSON.stringify(_PBuilder.properties));
+		var components = window.btoa(JSON.stringify(_PBuilder.loaded_components));
+		loadFile( function(saveData) {
+			_PAGE.create(_USER.token, _PROJECT.crnt_name, JSON.parse(saveData));
+		},
+		 'pbuilder-publisher/publish.php', 
+		{
+			"data":data,
+			"properties":properties,
+			"schema":schema,
+			"components":components,
+			"page_slug":window.page_slug,
+			"css":_GITHUB.data[_PBuilder.properties.css_source],
+			"html":_GITHUB.data[_PBuilder.boiler_repo]['page.html']
+		},
+		function(msg){
+			alert('error: pbuilder-publisher/publish.php');
+		});
+	}else{
+		alert('Project:'+_PROJECT.crnt_name);
+		alert('Page:'+_PAGE.crnt_name);
+		alert('Temlate:'+_PBuilder.boiler_repo);
+	} 
+	
+}
 
 
 
@@ -240,8 +287,6 @@ function gui_save(){
 		_DOM['modal-ctnt'].innerHTML = out;
 		loadFile( function(res) {	
 
-				console.log(res)	
-				
 				out = "<b>Your site was created on:</b><br/>";
 				out += "pbuilder-upload/"+window.page_slug;
 				out += "<p>Copy this link and enjoy!!</p>";

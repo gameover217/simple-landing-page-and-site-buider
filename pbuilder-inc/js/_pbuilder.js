@@ -5,7 +5,7 @@ var _PBuilder = {
 	},
 	
 	/* TEMPLATE SECTON */
-	'boiler_repo':'', /* template source */
+	'boiler_repo':null, /* template source */
 	'data':{}, /* content example file */
 	'schema':{}, /* properties for html sections */
 	'properties':{}, /* global properties */	
@@ -27,9 +27,9 @@ var _PBuilder = {
 		var _t = this;
 		_t.boiler_repo = boiler_repo;
 		/* Render App from file*/
-		if(localStorage.actual_landing_data){
+		//if(localStorage.actual_landing_data){
 			//this.init_Callback(JSON.parse(localStorage.actual_landing_data));
-		}else{
+		//}else{
 			
 			_GITHUB.get_content({
 				'repo':_t.boiler_repo,
@@ -42,13 +42,12 @@ var _PBuilder = {
 				_t.schema = JSON.parse(atob(_GITHUB.data[_t.boiler_repo]['page-properties.json'])).schema;
 				_t.properties = JSON.parse(atob(_GITHUB.data[_t.boiler_repo]['page-properties.json'])).properties;
 				//localStorage.actual_landing_data = _GITHUB.data[_t.boiler_repo]['page-content.json'];
-				
 				_DOM['pg-builder'].innerHTML = atob(_GITHUB.data[_t.boiler_repo]['page.html']);
 				document.getElementById("page-builder-wraper").style.display = 'block';
 
 				_t.init_Callback(JSON.parse(atob(_GITHUB.data[_t.boiler_repo]['page-content.json'])));
 			});
-		} 		
+		//} 		
 	},
 	/* 2 INIT callback - update app object */
 	init_Callback : function(data){
@@ -60,18 +59,32 @@ var _PBuilder = {
 		_GITHUB.get_content({
 			'repo':_PBuilder.properties['css_source'],
 			'branch':'master',
-			'filter':['abrahamlincoln'],
+			'filter':[_PBuilder.properties['css_structure']], // <-- TODO - filter three css files
 			},
 			/* callback */
 			function() {
-				console.log('--LOADED DATA--');
+				console.log('css source');
+				console.log(_GITHUB.data);
+				console.log(_PBuilder.properties['css_source']);
+				//alert(_PBuilder.properties['css_source']);
 				var d = _GITHUB.data[_PBuilder.properties['css_source']];
-				var out = '<style>';
-				for(var index in d) { 
-					out += atob(d[index]);
+				/*if(document.getElementById("uigen-style")){
+					alert('remove style');
+					document.getElementById("uigen-style").innerHTML = '';
+				}*/
+				//var out = '<style id="uigen-style">';
+				/* duublet - its gitdata filter [2 pbuilder, app] */
+				var out = '';
+				for(var index in d) {
+					
+					n = index.search(_PBuilder.properties['css_structure']); 
+					if(n != '-1'){
+						out += atob(d[index]);
+					}
 				}
-				out +='</style>';
-				document.getElementsByTagName("head")[0].innerHTML += out;
+				//out +='</style>';
+				document.getElementById('uigen-style').innerHTML = out;
+				//document.getElementsByTagName("head")[0].innerHTML += out;
 				_PBuilder.load_components();
 		});
 	},	
@@ -84,14 +97,15 @@ var _PBuilder = {
 				filter.push(this.schema[_i].default_component);
 			}
 		}
+		//alert(_this.properties['css_structure']);
 		_GITHUB.get_content({
-			'repo':'relu-org/ArthurWellesleyComponents/',
+			'repo':_this.properties['components_path'], // <------------------------------------
 			'branch':'master',
 			'filter':filter,
 			},
 			/* callback */
 			function() {
-				var _in = _GITHUB.data['relu-org/ArthurWellesleyComponents/'];
+				var _in = _GITHUB.data[_this.properties['components_path']]; // <------------------------------------
 				for(var _i in _in) {					
 					_this.loaded_components[_i] = atob(_in[_i]);
 				}
@@ -111,6 +125,7 @@ var _PBuilder = {
 				document.getElementById(section).outerHTML += out;
 			}
 			/* get templates and render it */
+
 			var tpl_part = this.loaded_components[this.schema[section]['default_component']];	
 			var content = this.data[ this.J_kIx(section) ];
 			if(content){
@@ -136,13 +151,15 @@ var _PBuilder = {
 			_PBuilder.moved_element(el,'to');
 			save_local_grid();
 		});	
+
+		console.log(this.properties);
+		console.log(this.schema);
 	},
 
 
 	
 	render: function(data, tpl_part, target){
-		
-		console.log('render');
+
 		var out = '';
 
 		out += tpl_part;
@@ -179,6 +196,8 @@ var _PBuilder = {
 		/* add new element */
 		document.getElementById(target).innerHTML += tempHTML(tempCONTENT);
 		document.getElementById(target).lastChild.innerHTML += controlls;
+
+
 		
 	},
 	/* ------------------------ */
@@ -218,9 +237,10 @@ var _PBuilder = {
 	/* ------------------------ */
 
 	remove: function(el,target){
-		var wraper = getClosest(el, 'section');
-		this.J_delete(wraper.parentNode.id, this.DOM_Ix( wraper ));
-		wraper.parentNode.removeChild(wraper);
+		var wraper = getClosest(el, '.s-wrapper');
+
+		this.J_delete(wraper.children[0].id, this.DOM_Ix( getClosest(el, 'article') ));
+		wraper.children[0].removeChild( getClosest(el, 'article') );
 		/*save_local_grid();*/
 	},
 	'e_obj':{
@@ -355,8 +375,8 @@ var _PBuilder = {
 		}		
 		return Object.keys(obj).indexOf(key);
 	},
-	J_delete: function(section, index){
-		this.data[this.J_kIx( section)].elements.splice(index, 1);
+	J_delete: function(section_id, el_index){
+		this.data[this.J_kIx(section_id)].elements.splice(el_index, 1);
 	},
 	DOM_Ix: function(el){
      	return Array.prototype.indexOf.call(el.parentNode.children, el);

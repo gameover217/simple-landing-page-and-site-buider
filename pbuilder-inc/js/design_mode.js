@@ -110,7 +110,7 @@ var _bTrform = {
 		this.on_guardian = true;
 	},
 	transform:function(){
-		var out = "";
+		var out = "display:block; ";
 		out += "transform: translate("+this.data.x+"px,"+this.data.y+"px) scale("+this.data.scale+");";
 		out += "-webkit-transform: translate("+this.data.x+"px,"+this.data.y+"px) scale("+this.data.scale+");";
 		
