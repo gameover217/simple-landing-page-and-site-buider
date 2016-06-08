@@ -276,10 +276,9 @@ section:hover{
 	position: absolute;	
 	left: 102%;
 	margin-top: -2.5em;
-	display:flex;
+	display: flex;
 	width:300px;
 	color:#000;
-	display:none;
 }
 .tooltip-arrow{
 	width:0;
@@ -505,6 +504,74 @@ section:hover{
 	font-family: sans-serif;
 	padding:0.5em 1em;
 	display:inline-block;
+}
+
+
+#right-bar{
+	position:fixed;
+	width:50%;
+	top:3em;
+	right:-50%;
+	height:100%;
+	background-color:#111;
+	box-shadow: 0 0 10px #000;
+	color:#eee;
+	opacity:0.96;
+	z-index:150;
+    transition: right 0.3s;
+}
+#right-bar.open{
+	right:0%;
+}
+#right-bar-handler{
+	position:absolute;
+	width:10px;
+	left:-10px;
+	height:10%;
+	top:40%;
+	opacity:0.96;
+	background-color: #111;
+	border-radius: 3px 0 0 3px;
+	cursor:pointer;
+	display:flex;
+	align-items:center;
+}
+#right-bar-handler i{
+	margin-left:-0.25em;
+} 
+
+.right-tab{
+	display:inline-block;
+	font-family: sans-serif;
+	font-size: 0.8em;
+	border:1px solid #999;
+	padding:2px;
+	margin:3px 1px;
+	color:#bbb;
+}
+.right-tab:hover{
+	background-color:#999;
+	color:#000;
+	cursor:pointer;
+}
+.prettyprint{
+	height:85%;
+	margin-left:10px;
+	overflow-y: scroll;
+	border-left:1px solid #181818;
+	padding-left:2px;
+}
+.prettyprint .key{
+	color:yellow;
+}
+.prettyprint .string{
+	color:#4AF04A;
+}
+.prettyprint .number{
+	color:#61F3C0;
+}
+.prettyprint .boolean{
+	color:#D161F3;
 }
 
 

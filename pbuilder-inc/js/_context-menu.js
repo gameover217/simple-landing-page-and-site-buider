@@ -4,24 +4,31 @@
 /* author: dadmor */
 /* licence GPL2 */
 var _CX_MENU = {
+
     "container": {},
     "sub_container": {},
     "menu": [],
     "element_schema": {    
     },
+     /* guardian to creade only one done callback */
+    "last_loaded_guardian":null,
+
+
     init:function(container, sub_container, schema){
         this.container = document.getElementById(container);
         this.sub_container = document.getElementById(sub_container);
     },
-    register_menu: function(m_el){
-        this.menu.push(m_el);
-        this.render_button(m_el);        
+    register_menu: function(m_opt, success){
+        this.menu.push(m_opt);
+        //this.render_button(m_opt); 
+        this.render_menu(success, m_opt);   
     },
-    render_button: function(m_el){       
-        var _e = m_el;
+    render_button: function(m_opt){     
+  
+        var _e = m_opt;
         load_content( function(_c) {    
             _CX_MENU.container.innerHTML += _c; 
-        }, m_el.tpl_path, m_el);
+        }, m_opt.tpl_path, m_opt);
         return false;
     },
     active_button: function(id){
@@ -38,10 +45,20 @@ var _CX_MENU = {
         }
      },
     /* ------------------------------- */
-    render_menu: function(){
-        /*for(var index in this.menu) { 
-            var attr = this.menu[index]; 
-        }*/
+    render_menu: function(success, m_opt){
+        _s = success;
+        _m = m_opt;
+        if(_CX_MENU.last_loaded_guardian != _m.name){
+            _CX_MENU.last_loaded_guardian = _m.name;
+            _CX_MENU.container.innerHTML = '';
+            load_content( function(_c) {    
+                _CX_MENU.container.innerHTML = _c; 
+                _s(_m);
+            }, this.menu[0].tpl_path, this.menu);
+            
+        }else{
+            return false;
+        }
     },
     callback: function(_t){
         for(var index in this.menu) { 

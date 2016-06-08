@@ -31,21 +31,9 @@ var templates = [
 },
 ]
 
-/* -----------------------------------------*/
-/* user autologin */
-_USER.login(
-	/* success */
-	function(res){
-		//alert('user login !!!');
-	},
-	/* fail */
-	function(){
-		//alert('I dont have token - fuck you!!!');
-	}
-);
-/* -----------------------------------------*/
+
 /* create MENU */
-var mbtn_tpl = "pbuilder-inc/gui-content/context_menu-button.html";
+var mbtn_tpl = "pbuilder-inc/gui-content/context_menu-buttons.html";
 
 _CX_MENU.init(
 	'contextmenu', /* menu container ID */
@@ -106,6 +94,7 @@ var get_project = function(repo){
 	_PROJECT.get(repo,get_project_callback = function(res){
 		_PROJECT.crnt_name = repo;
 		_PAGE.site_map = res;
+		_CONTEXT_HELP.show_help('pages-tab','Choose page');
 		load_content( function(_r) {	
 			_DOM['hed-dsc'].innerHTML = _r;
 		},
@@ -186,6 +175,26 @@ _CX_MENU.register_menu(
 		"tpl_path":mbtn_tpl, /* string */
 		"onclick_callback":"_cx_menu_tpl", /* string */
 		"submenu":true /* bolean */
+	},function(done){		
+		
+		/* -----------------------------------------*/
+		/* -----------------------------------------*/
+		/* user autologin */
+		_USER.login(
+			/* success */
+			function(res){
+				//alert('user login !!!');
+				_CONTEXT_HELP.init();
+			},
+			/* fail */
+			function(){
+				//alert('I dont have token - fuck you!!!');
+				_CONTEXT_HELP.init();
+			}
+		);
+		/* -----------------------------------------*/
+		/* -----------------------------------------*/
+
 	}
 );
 var _cx_menu_tpl = function(data){
@@ -206,6 +215,10 @@ var get_template = function(name){
 	_PBuilder.init(name);
 }
 /* -----------------------------------------*/
+
+
+
+
 
 var published = function(){
 	if( (_PROJECT.crnt_name) && (_PAGE.crnt_name) && (_PBuilder.boiler_repo))

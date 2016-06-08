@@ -9,6 +9,7 @@ rel="stylesheet">
 <!-- <script type="text/javascript" src="pbuilder-inc/js/medium-editor.min.js"></script> -->
 <script type="text/javascript" src="pbuilder-inc/js/doT.min.js"></script>
 <script type="text/javascript" src="pbuilder-inc/js/dropzone.min.js"></script>
+<script type="text/javascript" src="pbuilder-inc/js/json-to-table.js"></script>
 
 	
 <body id="body"  >
@@ -39,6 +40,10 @@ rel="stylesheet">
 			PUBLISH PROJECT
 		</div>
 		
+	</div>
+	<div id="right-bar">
+		<div style="float:right; font-family:sans; font-size:0.5em; color:#444; margin:6px; line-height:2em; letter-spacing:0.25em; font-weight:bold; text-transform:uppercase;">Application data inspector</div>
+		<div id="right-bar-handler" onclick="right_bar_click()"><i class="material-icons">&#xE5D4;</i></div>
 	</div>
 	<!-- LEFTBAR -->
 	<div id="contextmenu">
@@ -99,16 +104,20 @@ rel="stylesheet">
 	
 	
 </body>
+<script type="text/javascript" src="pbuilder-inc/js/_nav-context-help.js"></script>
 <script type="text/javascript" src="pbuilder-inc/js/_tech.js"></script>
-<script type="text/javascript" src="pbuilder-inc/js/github-content-uploader.js"></script> 
+<script type="text/javascript" src="pbuilder-inc/js/_github-content-uploader.js"></script> 
 
 <script type="text/javascript" src="pbuilder-inc/js/uigen_user.js"></script>
 <script type="text/javascript" src="pbuilder-inc/js/uigen_project.js"></script>
 <script type="text/javascript" src="pbuilder-inc/js/uigen_page.js"></script>
+
 <script type="text/javascript" src="pbuilder-inc/js/_context-menu.js"></script> 
+ 
 
 <!-- <script type="text/javascript" src="pbuilder-inc/js/uigen_page.js"></script> -->
 
-<script type="text/javascript" src="pbuilder-inc/js/_pbuilder.js"></script>
+<script type="text/javascript" src="pbuilder-inc/js/uigen_pbuilder.js"></script>
+<script type="text/javascript" src="pbuilder-inc/js/app_data.js"></script> 
 <script type="text/javascript" src="pbuilder-inc/js/app.js"></script> 
 

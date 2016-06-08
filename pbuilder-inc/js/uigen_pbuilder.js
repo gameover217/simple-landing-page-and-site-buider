@@ -1,14 +1,17 @@
 var _PBuilder = {
 	/* PROJECTS AND PAGES */
+	
 	'projects':{
 		
 	},
 	
 	/* TEMPLATE SECTON */
+	
 	'boiler_repo':null, /* template source */
 	'data':{}, /* content example file */
 	'schema':{}, /* properties for html sections */
 	'properties':{}, /* global properties */	
+	
 	/* TECH SECTON */
 	'loaded_components':{},
 	'dragobj':{},

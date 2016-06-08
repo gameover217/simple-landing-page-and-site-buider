@@ -1,0 +1,7 @@
+{{~it :value:index}}
+	<div id="{{=value.id}}" class="menu-tab" {{? value.onclick_callback }} onmousedown="_CX_MENU.callback(this)" {{?}}>
+		{{? value.href }} <a href="{{=value.href}}"> {{?}}
+			<i class="material-icons">{{=value.ico}}</i> {{=value.name}}
+		{{? value.href }} </a> {{?}}
+	</div>
+{{~}}
