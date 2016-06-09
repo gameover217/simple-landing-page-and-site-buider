@@ -3,5 +3,5 @@
 Simplest way to create web page with drag and drop editor.
 
 # Live demo
-http://wpstudio.io/simple-landing-page-and-site-buider/page-builder.php
+disable now
 
