@@ -1,6 +1,6 @@
-# Simple landing page and site buider
+# Create static web
 
-Simplest way to create web page with drag and drop editor.
+Web generator to create github.io static projects
 
 # Live demo
 disable now
