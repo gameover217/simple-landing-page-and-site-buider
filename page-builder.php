@@ -35,7 +35,7 @@ rel="stylesheet">
 			<i class="material-icons">&#xE323;</i>
 			DESIGN MODE
 		</div>
-		<div style="color:rgb(139, 242, 133)" class="main-ico" onclick="published()">
+		<div style="color:rgb(139, 242, 133)" class="main-ico" onclick="_PUB.init()">
 			<i class="material-icons">&#xE2C0;</i>
 			PUBLISH PROJECT
 		</div>

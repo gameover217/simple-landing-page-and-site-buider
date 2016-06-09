@@ -65,7 +65,7 @@ _CX_MENU.register_menu(
 		_USER.login(
 			/* success */
 			function(res){
-
+				document.getElementById('login-tab').setAttribute("onclick", "open_current_user()");
 				document.getElementById('login-tab').innerHTML = '<i class="material-icons">&#xE85E;</i>  '+_USER.current.login;
 				_CONTEXT_HELP.init();
 
@@ -81,6 +81,11 @@ _CX_MENU.register_menu(
 
 	}
 	);
+
+function open_current_user(){
+	right_bar_open();
+	viz_data(_USER);
+}
 /* -----------------------------------------*/
 _CX_MENU.register_menu(
 	{
@@ -248,36 +253,42 @@ var get_template = function(repo_name,init_filename){
 
 
 
-var published = function(){
-	if( (_PROJECT.crnt_name) && (_PAGE.crnt_name) && (_PBuilder.boiler_repo))
-	{
-		var data = window.btoa(JSON.stringify(_PBuilder.data));
-		var schema = window.btoa(JSON.stringify(_PBuilder.schema));
-		var properties = window.btoa(JSON.stringify(_PBuilder.properties));
-		var components = window.btoa(JSON.stringify(_PBuilder.loaded_components));
-		loadFile( function(saveData) {
-			_PAGE.create(_USER.token, _PROJECT.crnt_name, JSON.parse(saveData));
-			alert('page created');
-		},
-		 'pbuilder-publisher/publish.php', 
+var _PUB = {
+	prop: {
+		data:null,
+		schema:null,
+		properties:null,
+		components:null,
+		page_slug:null,
+		css:null,
+		html:null
+	},
+	init: function(){
+		if( (_PROJECT.crnt_name) && (_PAGE.crnt_name) && (_PBuilder.boiler_repo))
 		{
-			"data":data,
-			"properties":properties,
-			"schema":schema,
-			"components":components,
-			"page_slug":window.page_slug,
-			"css":_GITHUB.data[_PBuilder.properties.css_source],
-			"html":_GITHUB.data[_PBuilder.boiler_repo]['page.html']
-		},
-		function(msg){
-			alert('error: pbuilder-publisher/publish.php');
-		});
-	}else{
-		alert('Project:'+_PROJECT.crnt_name);
-		alert('Page:'+_PAGE.crnt_name);
-		alert('Temlate:'+_PBuilder.boiler_repo);
-	} 
-	
+			this.prop.data = window.btoa(JSON.stringify(_PBuilder.data));
+			this.prop.schema = window.btoa(JSON.stringify(_PBuilder.schema));
+			this.prop.properties = window.btoa(JSON.stringify(_PBuilder.properties));
+			this.prop.components = window.btoa(JSON.stringify(_PBuilder.loaded_components));
+			this.prop.page_slug = window.page_slug;
+			this.prop.css = _DATA.assets.boilerplates[_PBuilder.properties.css_source];
+			this.prop.html = _DATA.assets.boilerplates[_PBuilder.boiler_repo][_PBuilder.init_filename+'.html'];
+			
+			loadFile( function(saveData) {
+				_PAGE.create(_USER.token, _PROJECT.crnt_name, JSON.parse(saveData));
+				alert('page created: http://'+_USER.current.login+'.github.io/yourprojectname/')
+			},
+			'pbuilder-publisher/publish.php', 
+			this.prop,
+			function(msg){
+				alert('error: pbuilder-publisher/publish.php');
+			});
+		}else{
+			alert('Project:'+_PROJECT.crnt_name);
+			alert('Page:'+_PAGE.crnt_name);
+			alert('Temlate:'+_PBuilder.boiler_repo);
+		} 
+	}	
 }
 
 

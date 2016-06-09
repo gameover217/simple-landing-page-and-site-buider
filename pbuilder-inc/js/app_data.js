@@ -36,6 +36,7 @@ input += '<div class="right-tab" onclick="viz_data(_DATA)">App</div>';
 input += '<div class="right-tab" onclick="viz_data(_PROJECT)">Projecs</div>';
 input += '<div class="right-tab" onclick="viz_data(_PAGE)">Pages</div>';
 input += '<div class="right-tab" onclick="viz_data(_PBuilder)">Builder</div>';
+input += '<div class="right-tab" onclick="viz_data(_PUB)">Publisher</div>';
 input += '<pre id="prettyprint" class="prettyprint"></pre>';
 document.getElementById('right-bar').innerHTML += input;
 
@@ -70,4 +71,7 @@ function syntaxHighlight(json) {
 
 function right_bar_click(){
 	document.getElementById("right-bar").classList.toggle("open");
+}
+function right_bar_open(){
+	document.getElementById("right-bar").classList.add("open");
 }
