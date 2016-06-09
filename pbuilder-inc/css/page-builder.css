@@ -200,20 +200,6 @@ and (max-device-width : 640px){
 }
 
 
-#inspector{
-	box-shadow:0px 0px 5px #333;
-	font-family:courier;
-	background-color: #333;
-	color:yellow;
-	margin:2em auto;
-	width:80%;
-	border:15px solid #333;
-	display:none;
-}
-#inspector-content{
-	color:#ddd;
-}
-
 section{
 	/*border-bottom: #fff solid 1px;*/
 	min-height: 100px !important;
@@ -393,6 +379,7 @@ section:hover{
 }
 .modalDialog > div {
     width: 82%;
+    min-height:80%;
 	position: relative;
 	margin: 52px 0% 0% 12%;
 	padding: 20px 40px 25px;
@@ -565,7 +552,11 @@ section:hover{
 	color:yellow;
 }
 .prettyprint .string{
-	color:#4AF04A;
+	color: #4AF04A;
+	max-width: 100%;
+	overflow: hidden;
+	display: inline-block;
+	vertical-align: -0.2em;
 }
 .prettyprint .number{
 	color:#61F3C0;

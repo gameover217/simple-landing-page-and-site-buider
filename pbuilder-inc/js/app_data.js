@@ -12,9 +12,10 @@ var _DATA = {
 	},
 	/* projects user repos */
 	projects:{}, 
-	global_content:{}
+	global_content:{},
+	local_content:{}
 }
-
+/* TODO */
 var projects_schema = {
 	props:{
 		boilerplate_repo:null,
@@ -26,6 +27,10 @@ var projects_schema = {
 	schema:{},
 	content:{}
 }
+
+
+
+
 var input = '<div class="right-tab" onclick="viz_data(_USER)">User</div>';
 input += '<div class="right-tab" onclick="viz_data(_DATA)">App</div>';
 input += '<div class="right-tab" onclick="viz_data(_PROJECT)">Projecs</div>';

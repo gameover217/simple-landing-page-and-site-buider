@@ -95,11 +95,6 @@ rel="stylesheet">
 		</div>
 	</div>
 
-	<!-- INSPECTOR -->
-	<div id="inspector" style="overflow:hidden;  padding:1em">
-		Inspector
-		<pre id="inspector-content" style="font-size:9px;"></pre>
-	</div>
 
 	
 	

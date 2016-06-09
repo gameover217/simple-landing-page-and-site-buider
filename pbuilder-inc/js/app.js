@@ -57,6 +57,28 @@ _CX_MENU.register_menu(
 		"tpl_path":mbtn_tpl, /* string */
 		"submenu":false, /* bolean */
 		"href": "http://uigen.org/Otto-von-Bismarck?remote" /* string */
+	},function(done){		
+		
+		/* -----------------------------------------*/
+		/* -----------------------------------------*/
+		/* user autologin */
+		_USER.login(
+			/* success */
+			function(res){
+
+				document.getElementById('login-tab').innerHTML = '<i class="material-icons">&#xE85E;</i>  '+_USER.current.login;
+				_CONTEXT_HELP.init();
+
+			},
+			/* fail */
+			function(){
+				//alert('I dont have token - fuck you!!!');
+				_CONTEXT_HELP.init();
+			}
+		);
+		/* -----------------------------------------*/
+		/* -----------------------------------------*/
+
 	}
 	);
 /* -----------------------------------------*/
@@ -72,17 +94,18 @@ _CX_MENU.register_menu(
 );
 /* Example contstruction with callback-listener for Agent */
 var menu_projects_callback;
-var _cx_menu_projects = function(data){
+var _cx_menu_projects = function(){	
 	if(_USER.current){		
 		_PROJECT.get_list(_USER.token, menu_projects_callback = function(res){
 			//_AGENT.store_callback('project_get_list_callback');
 			load_content( function(_r) {	
-				_DOM['sub-mnu'].innerHTML = _r;
+				_DOM['sub-mnu'].innerHTML = _r;				
 			},
 			'pbuilder-inc/gui-content/project-list.html',
 			{
 				"list": res,
-				"branch":_PROJECT.crnt_pub_branch
+				"branch":_PROJECT.crnt_pub_branch,
+				"active":_PROJECT.crnt_name
 			});
 		});
 	}
@@ -90,19 +113,24 @@ var _cx_menu_projects = function(data){
 
 var get_project_callback;
 var get_project = function(repo){
-	_CX_MENU.close();
-	_PROJECT.get(repo,get_project_callback = function(res){
-		_PROJECT.crnt_name = repo;
-		_PAGE.site_map = res;
-		_CONTEXT_HELP.show_help('pages-tab','Choose page');
-		load_content( function(_r) {	
-			_DOM['hed-dsc'].innerHTML = _r;
-		},
-		'pbuilder-inc/gui-content/project-breadcrumb.html',
-		{
-			"project": _PROJECT.crnt_name,
+	if(repo != _PROJECT.crnt_name){
+		_CX_MENU.close();
+		_CONTEXT_HELP.close();
+		_PROJECT.get(repo,get_project_callback = function(res){
+			_PROJECT.crnt_name = repo;
+			_PAGE.site_map = res;
+			_CONTEXT_HELP.show_help('pages-tab','Choose page');
+			load_content( function(_r) {	
+				_DOM['hed-dsc'].innerHTML = _r;
+			},
+			'pbuilder-inc/gui-content/project-breadcrumb.html',
+			{
+				"project": _PROJECT.crnt_name,
+			});
 		});
-	});
+	}else{
+		_CX_MENU.close();
+	}
 }
 
 var new_project_show_modal = function(){
@@ -116,12 +144,28 @@ var new_project_run_callback;
 var new_project_run = function(_t){
 	_PROJECT.create(_USER.token, _t.previousSibling.value, new_project_run = function(res){
 		console.log('app:project created');
+		console.log(res);
+		var project_response = res;
 		_PAGE.site_map = [{"url":"index.html"}];
 		_PAGE.create(_USER.token, _PROJECT.crnt_name, [
 			{"file_name":"index.html","content":window.btoa("UiGEN index empty file")},
 			{"file_name":"site-map.json","content":window.btoa(JSON.stringify(_PAGE.site_map))},
 			{"file_name":"init.txt","content":window.btoa("UiGEN:true")}
-		]);
+		],function(success){
+			project_response.default_branch = _PROJECT.crnt_pub_branch;
+			_PROJECT.list.push(project_response);
+			console.log(_PROJECT.list);
+			load_content( function(_r) {	
+				console.log(_r);
+				_DOM['sub-mnu'].innerHTML = _r;				
+			},
+			'pbuilder-inc/gui-content/project-list.html',
+			{
+				"list": _PROJECT.list,
+				"branch":_PROJECT.crnt_pub_branch
+			});
+		});
+		
 	});
 }
 
@@ -162,7 +206,9 @@ var get_page = function(name){
 		"project": _PROJECT.crnt_name,
 		"page": _PAGE.crnt_name
 	});
+	/* TODO - check is page have theme */
 	document.getElementById('page-builder-wraper').style.display = 'block';
+	_CONTEXT_HELP.show_help('templates-tab','Select page theme :D');
 
 }
 
@@ -175,26 +221,6 @@ _CX_MENU.register_menu(
 		"tpl_path":mbtn_tpl, /* string */
 		"onclick_callback":"_cx_menu_tpl", /* string */
 		"submenu":true /* bolean */
-	},function(done){		
-		
-		/* -----------------------------------------*/
-		/* -----------------------------------------*/
-		/* user autologin */
-		_USER.login(
-			/* success */
-			function(res){
-				//alert('user login !!!');
-				_CONTEXT_HELP.init();
-			},
-			/* fail */
-			function(){
-				//alert('I dont have token - fuck you!!!');
-				_CONTEXT_HELP.init();
-			}
-		);
-		/* -----------------------------------------*/
-		/* -----------------------------------------*/
-
 	}
 );
 var _cx_menu_tpl = function(data){
@@ -202,7 +228,7 @@ var _cx_menu_tpl = function(data){
 		load_content( function(_r) {	
 			_DOM['sub-mnu'].innerHTML = _r;
 		},
-		'pbuilder-inc/gui-content/template-list.html',
+		'pbuilder-inc/gui-content/templates-list.html',
 		{
 			"list": templates,
 		});
@@ -210,9 +236,11 @@ var _cx_menu_tpl = function(data){
 }
 
 var get_template_callback;
-var get_template = function(name){
+/* where is template list */
+var get_template = function(repo_name,init_filename){
 	_CX_MENU.close();
-	_PBuilder.init(name);
+	_CONTEXT_HELP.close();
+	_PBuilder.init(repo_name,init_filename);
 }
 /* -----------------------------------------*/
 
@@ -229,6 +257,7 @@ var published = function(){
 		var components = window.btoa(JSON.stringify(_PBuilder.loaded_components));
 		loadFile( function(saveData) {
 			_PAGE.create(_USER.token, _PROJECT.crnt_name, JSON.parse(saveData));
+			alert('page created');
 		},
 		 'pbuilder-publisher/publish.php', 
 		{
@@ -261,17 +290,13 @@ var published = function(){
 /* -------------------------------------------------------------------------------- */
 /* -------------------------------------------------------------------------------- */
 
+/* off now */
 var save_local_grid = function(){
 	localStorage.actual_landing_data =  JSON.stringify(_PBuilder.data);
 	var str = JSON.stringify(_PBuilder.data, null, 2);
-	_DOM['insp-content'].innerHTML = "##:DATA\n";
-	_DOM['insp-content'].innerHTML += str;
 	var str = JSON.stringify(_PBuilder.schema, null, 2);
-	_DOM['insp-content'].innerHTML += "\n\n##:SHEMA\n";
-	_DOM['insp-content'].innerHTML += str;
 	var str = JSON.stringify(_PBuilder.move_element, null, 2);
-	_DOM['insp-content'].innerHTML += "\n\n##:DRAG AND DROP\n";
-	_DOM['insp-content'].innerHTML += str;
+
 }
 
 

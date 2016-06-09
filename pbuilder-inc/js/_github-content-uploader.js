@@ -1,42 +1,78 @@
 var _GITHUB = {
+	/* new model */
+	prop:{},
+	/* end */
 	sha:{},
-	data: {},
+	//data: {},
 	res: {},
+	
 	count: 0,
+	
 	filter: [],
 	repo: '',
+
 	preloader_count: 0,
 	preloader_length: 1,
 	preloader_bar_id: 'preloader-bar',
 
 	get_content: function(prop, done){
+
 		_t = this;
+		_t.count = 0;
+		_t.prop = prop;
 		_t.done = done;
-		_t.repo = prop.repo;
-		_t.filter = prop.filter;
-		if(!_t.filter){
-			_t.filter = null;
+		if(!_t.prop.filter){
+			_t.prop.filter = null;
 		}
 		loadFile( function(_r) {
 			_t.res = JSON.parse(_r);
 			_t.preloader_init('tree');
 			_t.move_preloader(_t.res.tree[0].path);
 			_t.load();
-		}, 'https://api.github.com/repos/'+_t.repo+'git/trees/'+prop.branch+'?recursive=1'); 
+		}, 'https://api.github.com/repos/'+_t.prop.repo+'git/trees/'+prop.branch+'?recursive=1'); 
 	},
 
 	load: function(){
 		_t = this;
 		if(	_t.check_filter(_t.count) ){
 			loadFile( function(_r) {
+				/* old model update this data */
+				/*
 				if(!_t.data[_t.repo]){
 					_t.data[_t.repo] = {};
-					_t.sha[_t.repo] = {};
-				}
+					_t.sha[_t.repo] = {}; 
+				}				
 				_t.data[_t.repo][_t.res.tree[_t.count].path] = JSON.parse(_r).content;
 				_t.sha[_t.repo][_t.res.tree[_t.count].path] = JSON.parse(_r).sha;
+				*/
+
+				if(_t.prop.content_type == 'project'){
+					if(!_DATA.projects[_t.prop.repo]){
+						_DATA.projects[_t.prop.repo] = {};
+					}
+					_DATA.projects[_t.prop.repo][_t.res.tree[_t.count].path] = JSON.parse(_r).content;
+				}
+				if(
+					(_t.prop.content_type == 'boilerplates')||
+					(_t.prop.content_type == 'css')||
+					(_t.prop.content_type == 'blocks')
+				){
+
+					/* new model update app data */
+					if(!_DATA.assets[_t.prop.content_type][_t.prop.repo]){
+						_DATA.assets[_t.prop.content_type][_t.prop.repo] = {};
+						_DATA.sha[_t.prop.content_type][_t.prop.repo] = {}; 
+					}	
+					if(JSON.parse(_r).content){
+						_DATA.assets[_t.prop.content_type][_t.prop.repo][_t.res.tree[_t.count].path] = JSON.parse(_r).content;
+						_DATA.sha[_t.prop.content_type][_t.prop.repo][_t.res.tree[_t.count].path] = JSON.parse(_r).sha;
+					}
+
+				}
+
 				_t.move_preloader(_t.res.tree[_t.count].path);
 				_t.next_call();
+
 			}, _t.res.tree[_t.count].url); 
 		}else{
 			_t.next_call();
@@ -59,8 +95,8 @@ var _GITHUB = {
 	check_filter:function(_c){
 		_t = this;
 		_g = false;
-		if(_t.filter){
-			_t.filter.forEach(function (_d, i) {
+		if(_t.prop.filter){
+			_t.prop.filter.forEach(function (_d, i) {
 	   			_r = _t.res.tree[_c].path.search(_d);
 	   			if(_r!='-1'){	   				
 	   				_g = true;
@@ -110,14 +146,30 @@ var _GITHUB = {
 		});
 	},
 	/* ------------------------------ */
-	// [{'name','blob'}]
-	create_files: function(token, repo, filesArray){
-		this.count = 0;
-		this.create_next_file(token, repo, filesArray);
-
+	get_file:function(_tkn, repo, path, success){
+		_GITHUB.preloader_init(1);
+		loadFile( function(res) {	
+			_GITHUB.move_preloader('get projects list');	
+			success(res);
+		},
+		'https://api.github.com/repos/'+repo+'/contents/'+path+'?access_token='+_tkn, 
+		null,
+		function(msg){
+			alert('error 404');
+		});
 	},
-	create_next_file: function(token, repo, filesArray){
-
+	/* ------------------------------ */
+	// [{'name','blob'}]
+	create_files: function(token, repo, filesArray, cf_success){
+		var _s = cf_success;
+		this.count = 0;
+		this.create_next_file(token, repo, filesArray, function(success){
+			_s(success);
+		});
+		
+	},
+	create_next_file: function(token, repo, filesArray, nf_success){
+		var _s = nf_success;
 		if(filesArray.length > this.count){	
 
 			var file = {
@@ -134,17 +186,18 @@ var _GITHUB = {
 				}	
 			}
 			catch(err) {}
-					
+			console.log('add:'+filesArray[this.count].file_name);		
 			loadFile( function(response) {		
-					_GITHUB.count++;
-					_GITHUB.create_next_file(token, repo, filesArray);					
+				_GITHUB.count++;
+				_GITHUB.create_next_file(token, repo, filesArray, _s); 
 			},
-				'https://api.github.com/repos/'+repo+'/contents/'+filesArray[this.count].file_name+'?ref='+_PROJECT.crnt_pub_branch+'&access_token='+token, 
+			'https://api.github.com/repos/'+repo+'/contents/'+filesArray[this.count].file_name+'?ref='+_PROJECT.crnt_pub_branch+'&access_token='+token, 
 			file,
 			function(msg){
 				alert('error 404');
 			},"PUT");
-		}else{
+		}else{	
+			_s(filesArray);	
 			console.log('github-content-uploader:files created');
 			return true;
 		}

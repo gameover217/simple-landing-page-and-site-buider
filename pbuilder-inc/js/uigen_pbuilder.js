@@ -8,6 +8,8 @@ var _PBuilder = {
 	/* TEMPLATE SECTON */
 	
 	'boiler_repo':null, /* template source */
+	'init_filename':null,
+
 	'data':{}, /* content example file */
 	'schema':{}, /* properties for html sections */
 	'properties':{}, /* global properties */	
@@ -26,68 +28,63 @@ var _PBuilder = {
 		}
 	},
 	/* 1 INIT - load content data */
-	init: function(boiler_repo){
+	init: function(boiler_repo,init_filename){
 		var _t = this;
 		_t.boiler_repo = boiler_repo;
+		_t.init_filename = init_filename;
 		/* Render App from file*/
 		//if(localStorage.actual_landing_data){
 			//this.init_Callback(JSON.parse(localStorage.actual_landing_data));
 		//}else{
 			
 			_GITHUB.get_content({
+				'content_type':'boilerplates',
 				'repo':_t.boiler_repo,
 				'branch':'master',
-				'filter':['page'],
+				'filter':[init_filename], /* !!!!! filter is index_page_name and subfolder repo name */
 			},
 			/* callback */
 			function() {
-				_t.data = JSON.parse(atob(_GITHUB.data[_t.boiler_repo]['page-content.json']));
-				_t.schema = JSON.parse(atob(_GITHUB.data[_t.boiler_repo]['page-properties.json'])).schema;
-				_t.properties = JSON.parse(atob(_GITHUB.data[_t.boiler_repo]['page-properties.json'])).properties;
-				//localStorage.actual_landing_data = _GITHUB.data[_t.boiler_repo]['page-content.json'];
-				_DOM['pg-builder'].innerHTML = atob(_GITHUB.data[_t.boiler_repo]['page.html']);
-				document.getElementById("page-builder-wraper").style.display = 'block';
+				
+				_t.data = JSON.parse(atob( _DATA.assets.boilerplates[_t.boiler_repo][_t.init_filename+'/'+_t.init_filename+'-content.json']))
+				_t.schema = JSON.parse(atob( _DATA.assets.boilerplates[_t.boiler_repo][_t.init_filename+'/'+_t.init_filename+'-properties.json'])).schema;
+				_t.properties = JSON.parse(atob( _DATA.assets.boilerplates[_t.boiler_repo][_t.init_filename+'/'+_t.init_filename+'-properties.json'])).properties;
+				
+				// ---> localStorage.actual_landing_data = _GITHUB.data[_t.boiler_repo]['page-content.json'];
+				
 
-				_t.init_Callback(JSON.parse(atob(_GITHUB.data[_t.boiler_repo]['page-content.json'])));
+				_DOM['pg-builder'].innerHTML = atob(_DATA.assets.boilerplates[_t.boiler_repo][_t.init_filename+'.html']);
+				document.getElementById("page-builder-wraper").style.display = 'block';
+				_t.init_Callback(JSON.parse(atob(_DATA.assets.boilerplates[_t.boiler_repo][_t.init_filename+'/'+_t.init_filename+'-content.json'])));
 			});
 		//} 		
 	},
 	/* 2 INIT callback - update app object */
 	init_Callback : function(data){
 		/* build data model */
-		this.data = data;
-		this.data = _clear_at_start(data);
+		//this.data = data;
+		//this.data = _clear_at_start(data);
 
 		/* LOAD FROM GITHUB */
 		_GITHUB.get_content({
+			'content_type':'css',
 			'repo':_PBuilder.properties['css_source'],
 			'branch':'master',
 			'filter':[_PBuilder.properties['css_structure']], // <-- TODO - filter three css files
 			},
 			/* callback */
 			function() {
-				console.log('css source');
-				console.log(_GITHUB.data);
-				console.log(_PBuilder.properties['css_source']);
-				//alert(_PBuilder.properties['css_source']);
-				var d = _GITHUB.data[_PBuilder.properties['css_source']];
-				/*if(document.getElementById("uigen-style")){
-					alert('remove style');
-					document.getElementById("uigen-style").innerHTML = '';
-				}*/
-				//var out = '<style id="uigen-style">';
+
+				var d =  _DATA.assets.css[_PBuilder.properties['css_source']];
 				/* duublet - its gitdata filter [2 pbuilder, app] */
 				var out = '';
 				for(var index in d) {
-					
 					n = index.search(_PBuilder.properties['css_structure']); 
 					if(n != '-1'){
 						out += atob(d[index]);
 					}
 				}
-				//out +='</style>';
 				document.getElementById('uigen-style').innerHTML = out;
-				//document.getElementsByTagName("head")[0].innerHTML += out;
 				_PBuilder.load_components();
 		});
 	},	
@@ -100,15 +97,15 @@ var _PBuilder = {
 				filter.push(this.schema[_i].default_component);
 			}
 		}
-		//alert(_this.properties['css_structure']);
 		_GITHUB.get_content({
+			'content_type':'blocks',
 			'repo':_this.properties['components_path'], // <------------------------------------
 			'branch':'master',
 			'filter':filter,
 			},
 			/* callback */
 			function() {
-				var _in = _GITHUB.data[_this.properties['components_path']]; // <------------------------------------
+				var _in =  _DATA.assets.blocks[_this.properties['components_path']];
 				for(var _i in _in) {					
 					_this.loaded_components[_i] = atob(_in[_i]);
 				}
@@ -166,7 +163,7 @@ var _PBuilder = {
 		var out = '';
 
 		out += tpl_part;
-		//out += '</div>';
+
 		out = out.replace(/\\"/g, '"');
 		/* create data */
 
@@ -174,11 +171,8 @@ var _PBuilder = {
 		var tempCONTENT = data;
 
 		var controlls='<div class="controlls">';
-		//out += '<div class="tech-wrapper">';
-		/* check is this section have delete */	
-
-		/*out += '<div class="drag"> <a href="#none"><i class="material-icons">&#xE25D;</i></a></div>';*/
 		
+		/* check is this section have delete */	
 		if(this.schema[target].remove){
 			controlls += '<div class="controll remove" onmousedown="event.stopPropagation()" onclick="_PBuilder.remove(this,\''+this.schema[target].remove+'\')"><a href="#none"><i class="material-icons">&#xE92B;</i></a></div>';
 		}
@@ -301,8 +295,15 @@ var _PBuilder = {
 		});
 	},
 	build_elem_form: function(e_obj){
+
 		this.e_obj = e_obj;
-		var out = '<div id="editor-wraper" onkeypress="_PBuilder.editor_keypress(event)">';
+
+		var out = '';
+		out += '<div>';
+		out += '<a href="#close" title="Close" class="close">X</a>';
+		out += '<h2 id="modal-title">Edit content block</h2>';
+		out += '<div id="modal-content">';
+		out += '<div id="editor-wraper" onkeypress="_PBuilder.editor_keypress(event)">';
 		for( var i = 0; i<this.e_obj.constrols.length; i++){
 
 			if(this.e_obj.constrols[i].getAttribute("data-bx") == 'title'){
@@ -327,7 +328,9 @@ var _PBuilder = {
 		});*/
 		out += '<a id="save-content" class="button" onclick="_PBuilder.editor_save()" href="#close">Save</a>';
 		out += '</div>';
-		_DOM['modal-ctnt'].innerHTML = out;
+		out += '</div>';
+		out += '</div>';
+		_DOM['modal-opn'].innerHTML = out;
 	},
 	editor_keypress: function(e){
 		if (e.keyCode == 13) {

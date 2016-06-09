@@ -7,27 +7,31 @@ var _PROJECT = {
 	get: function(repo, success){
 		var _s = success;
 		this.crnt_name = repo;
+		
 		_GITHUB.get_content({
 			'token':_USER.token,
 			'repo':repo+'/',
 			'branch':this.crnt_pub_branch,
 			'filter':undefined,
+			'content_type':'project'
 		},
-		function() {			
-			if( !_GITHUB.data[_PROJECT.crnt_name+'/']['init.txt'] ){
+		function() {	
+
+/*			if( !_GITHUB.data[_PROJECT.crnt_name+'/']['init.txt'] ){
 				alert('Critical error: I dont find init file.\nThis is not UiGEN repo or crasched repo');
 				return false;
 			}
 			if( !_GITHUB.data[_PROJECT.crnt_name+'/']['index.html'] ){
 				console.log('I dont have index');
 				return false;
-			}
-			if( _GITHUB.data[_PROJECT.crnt_name+'/']['site-map.json'] ){
+			}*/
+			if( _DATA.projects[_PROJECT.crnt_name+'/']['site-map.json'] ){
 				console.log('-site map exist-');
-				_s(JSON.parse(window.atob(_GITHUB.data[_PROJECT.crnt_name+'/']['site-map.json'])));
+				_s(JSON.parse(window.atob(_DATA.projects[_PROJECT.crnt_name+'/']['site-map.json'])));
 				return true;
 			}
 		});
+
 	},
 	get_list: function(token, success){
 		var _s = success;

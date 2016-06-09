@@ -19,9 +19,15 @@ var _CX_MENU = {
         this.sub_container = document.getElementById(sub_container);
     },
     register_menu: function(m_opt, success){
+        var s = success;
         this.menu.push(m_opt);
         //this.render_button(m_opt); 
-        this.render_menu(success, m_opt);   
+        this.render_menu(function(done){
+            if (typeof s === "function") {
+                console.log('callback button loaded');
+                s(done);
+            }
+        }, m_opt);   
     },
     render_button: function(m_opt){     
   
@@ -46,14 +52,16 @@ var _CX_MENU = {
      },
     /* ------------------------------- */
     render_menu: function(success, m_opt){
-        _s = success;
+        var __s = success;
         _m = m_opt;
         if(_CX_MENU.last_loaded_guardian != _m.name){
             _CX_MENU.last_loaded_guardian = _m.name;
             _CX_MENU.container.innerHTML = '';
             load_content( function(_c) {    
                 _CX_MENU.container.innerHTML = _c; 
-                _s(_m);
+                console.log('button loaded');
+                console.log(_c);
+                __s(_m);
             }, this.menu[0].tpl_path, this.menu);
             
         }else{

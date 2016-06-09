@@ -11,6 +11,10 @@ var _CONTEXT_HELP = {
 		}
 	},
 	show_help: function(id, content){
+		this.close();
 		document.getElementById(id).innerHTML += '<div id="tooltip-"'+id+' class="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-content">'+content+'</div></div>';
+	},
+	close: function(){
+		removeElementsByClass('tooltip');
 	}
 };
