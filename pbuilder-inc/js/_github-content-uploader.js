@@ -180,9 +180,11 @@ var _GITHUB = {
 			};
 			/* SHA TEST */
 			// update sha table
+			alert(repo+"///"+filesArray[this.count].file_name);			
 			try {
-				if(this.sha[repo+"/"][filesArray[this.count].file_name]){				
-					file['sha'] = this.sha[repo+"/"][filesArray[this.count].file_name];
+				if(this.sha[repo+"/"][filesArray[this.count].file_name]){	
+
+					file['sha'] = _DATA.sha.boilerplates[repo+"/"][filesArray[this.count].file_name];
 				}	
 			}
 			catch(err) {}

@@ -101,7 +101,8 @@ rel="stylesheet">
 </body>
 <script type="text/javascript" src="pbuilder-inc/js/_nav-context-help.js"></script>
 <script type="text/javascript" src="pbuilder-inc/js/_tech.js"></script>
-<script type="text/javascript" src="pbuilder-inc/js/_github-content-uploader.js"></script> 
+<!-- <script type="text/javascript" src="pbuilder-inc/js/_github-content-uploader.js"></script>  -->
+<script type="text/javascript" src="pbuilder-inc/js/_GITHUB_API.js"></script> 
 
 <script type="text/javascript" src="pbuilder-inc/js/uigen_user.js"></script>
 <script type="text/javascript" src="pbuilder-inc/js/uigen_project.js"></script>

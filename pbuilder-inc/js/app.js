@@ -121,17 +121,10 @@ var get_project = function(repo){
 	if(repo != _PROJECT.crnt_name){
 		_CX_MENU.close();
 		_CONTEXT_HELP.close();
-		_PROJECT.get(repo,get_project_callback = function(res){
+		_PROJECT.get_files({'token':_USER.token, 'repo':repo, 'path':''}, get_project_callback = function(res){
 			_PROJECT.crnt_name = repo;
 			_PAGE.site_map = res;
 			_CONTEXT_HELP.show_help('pages-tab','Choose page');
-			load_content( function(_r) {	
-				_DOM['hed-dsc'].innerHTML = _r;
-			},
-			'pbuilder-inc/gui-content/project-breadcrumb.html',
-			{
-				"project": _PROJECT.crnt_name,
-			});
 		});
 	}else{
 		_CX_MENU.close();
@@ -149,24 +142,19 @@ var new_project_run_callback;
 var new_project_run = function(_t){
 	_PROJECT.create(_USER.token, _t.previousSibling.value, new_project_run = function(res){
 		console.log('app:project created');
-		console.log(res);
 		var project_response = res;
 		_PAGE.site_map = [{"url":"index.html"}];
 		_PAGE.create(_USER.token, _PROJECT.crnt_name, [
 			{"file_name":"index.html","content":window.btoa("UiGEN index empty file")},
-			{"file_name":"site-map.json","content":window.btoa(JSON.stringify(_PAGE.site_map))},
-			{"file_name":"init.txt","content":window.btoa("UiGEN:true")}
 		],function(success){
 			project_response.default_branch = _PROJECT.crnt_pub_branch;
-			_PROJECT.list.push(project_response);
-			console.log(_PROJECT.list);
+			_PROJECT.files_list.push(project_response);
 			load_content( function(_r) {	
-				console.log(_r);
 				_DOM['sub-mnu'].innerHTML = _r;				
 			},
 			'pbuilder-inc/gui-content/project-list.html',
 			{
-				"list": _PROJECT.list,
+				"list": _PROJECT.files_list,
 				"branch":_PROJECT.crnt_pub_branch
 			});
 		});
@@ -191,7 +179,7 @@ var _cx_menu_pages = function(data){
 		load_content( function(_r) {	
 			_DOM['sub-mnu'].innerHTML = _r;
 		},
-		'pbuilder-inc/gui-content/page-list.html',
+		'pbuilder-inc/gui-content/pages-list.html',
 		{
 			"list": _PAGE.site_map,
 			"project": _PROJECT.crnt_name
@@ -211,9 +199,18 @@ var get_page = function(name){
 		"project": _PROJECT.crnt_name,
 		"page": _PAGE.crnt_name
 	});
+
+	/* load template linked with page */
+	/* page is ok - I check pagebuilder !!!! */
+	alert('todo: check is page have boilerplate')
+	_PBuilder.init(_PROJECT.crnt_name,_PAGE.crnt_name);
+
+
+
 	/* TODO - check is page have theme */
 	document.getElementById('page-builder-wraper').style.display = 'block';
 	_CONTEXT_HELP.show_help('templates-tab','Select page theme :D');
+
 
 }
 
@@ -248,10 +245,6 @@ var get_template = function(repo_name,init_filename){
 	_PBuilder.init(repo_name,init_filename);
 }
 /* -----------------------------------------*/
-
-
-
-
 
 var _PUB = {
 	prop: {

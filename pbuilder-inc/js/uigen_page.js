@@ -5,9 +5,10 @@ var _PAGE = {
 	
 	get: function(repo, success){
 		var _s = success;
-		_GITHUB.get_content(token, repo, path, function(success){
+		/*_GITHUBAPI.get_content(token, repo, path, function(success){
 			_s(success);
-		});
+		});*/
+		alert('todo');
 		
 	},
 	get_list: function(token, success){
@@ -15,7 +16,7 @@ var _PAGE = {
 	},
 	create: function(token, repo, filesArray, success){
 		var _s = success;
-		_GITHUB.create_files(token, repo, filesArray, function(success){
+		_GITHUBAPI.create_files(token, repo, filesArray, function(success){
 			_s(success);
 			
 		});

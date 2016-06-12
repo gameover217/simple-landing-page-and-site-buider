@@ -28,11 +28,22 @@ var projects_schema = {
 	content:{}
 }
 
+var _APPDATA = {
+
+}
+
+/* repo -> filepath */
+_APPDATA_schema = {
+	"type":null, /* css, boilerplate, component, component_js, page */
+	"blob":null,
+	"sha":null
+}
+
 
 
 
 var input = '<div class="right-tab" onclick="viz_data(_USER)">User</div>';
-input += '<div class="right-tab" onclick="viz_data(_DATA)">App</div>';
+input += '<div class="right-tab" onclick="viz_data(_APPDATA)">App</div>';
 input += '<div class="right-tab" onclick="viz_data(_PROJECT)">Projecs</div>';
 input += '<div class="right-tab" onclick="viz_data(_PAGE)">Pages</div>';
 input += '<div class="right-tab" onclick="viz_data(_PBuilder)">Builder</div>';

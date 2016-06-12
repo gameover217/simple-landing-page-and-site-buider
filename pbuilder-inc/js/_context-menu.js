@@ -59,8 +59,6 @@ var _CX_MENU = {
             _CX_MENU.container.innerHTML = '';
             load_content( function(_c) {    
                 _CX_MENU.container.innerHTML = _c; 
-                console.log('button loaded');
-                console.log(_c);
                 __s(_m);
             }, this.menu[0].tpl_path, this.menu);
             

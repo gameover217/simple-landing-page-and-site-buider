@@ -120,3 +120,8 @@ function removeElementsByClass(className){
         elements[0].parentNode.removeChild(elements[0]);
     }
 }
+
+function getUrlParamByName(name) {
+    var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+    return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+}
